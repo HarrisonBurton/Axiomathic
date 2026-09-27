@@ -26,11 +26,14 @@ fi
 # Render any TikZ/LaTeX image fragments requested by lwarp.
 lwarpmk limages -p "$PROJECT" || true
 
-# 3. Layer the reusable Axiomathic theme on top of lwarp's structural CSS.
+# 3. Rebuild website navigation from the LaTeX source-folder structure.
+python3 web/generate-site-config.py
+
+# 4. Layer the reusable Axiomathic theme on top of lwarp's structural CSS.
 cat lwarp.css web/axiomathic.css > site.css
 python3 web/postprocess.py
 
-# 4. Gather only deployable static files.
+# 5. Gather only deployable static files.
 rm -rf site
 mkdir -p site
 for f in *.html; do

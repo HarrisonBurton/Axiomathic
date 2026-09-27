@@ -38,7 +38,7 @@
 
     header.innerHTML = `
       <a class="ax-brand" href="index.html" aria-label="Axiomathic home">
-        <img class="ax-brand-logo" src="assets/axiomathic-alpha.svg" alt="" aria-hidden="true">
+        <img class="ax-brand-logo" src="assets/axiomathic-alpha.png" alt="" aria-hidden="true">
         <span class="ax-wordmark">xiomathic</span>
       </a>
       <nav class="ax-nav" aria-label="Site navigation">${nav}</nav>

@@ -73,3 +73,41 @@ the website category.
 1. Add its `\subfile{...}` line to `Axiomathic.tex`.
 2. Add a page entry to the appropriate `pages` array in `web/site-config.json`.
 3. Commit and push. GitHub Actions rebuilds the site.
+
+
+## Automatic website categorisation (v4)
+
+The website page lists are now rebuilt on every build. You do **not** manually add
+individual pages to `web/site-config.json`.
+
+Place source files under:
+
+```text
+sections/
+  summary-notes/   -> Summary Notes
+  projects/        -> Projects
+  style/           -> utility/style pages
+```
+
+Then add the corresponding `\\subfile{...}` line to `Axiomathic.tex`.
+`web/generate-site-config.py` scans the ordered `\\subfile` entries and the folder
+name, reads the first `\\chapter{...}` as the web title, and generates
+`web/site-config.json` automatically during `build.sh`.
+
+For example:
+
+```text
+sections/projects/Sums of 4 cubes.tex
+```
+
+plus
+
+```latex
+\\subfile{sections/projects/Sums of 4 cubes}
+```
+
+is enough for **Sums of 4 Cubes** to appear automatically under **Projects** on
+the next GitHub Actions build.
+
+Site-wide wording such as the homepage tagline remains in
+`web/site-config.base.json`.

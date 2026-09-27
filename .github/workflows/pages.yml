@@ -35,7 +35,7 @@ jobs:
             poppler-utils
 
       - name: Build PDF and website
-        run: ./build.sh
+        run: bash ./build.sh
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

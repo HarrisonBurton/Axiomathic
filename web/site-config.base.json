@@ -1,7 +1,7 @@
 {
   "siteTitle": "Axiomathic",
   "tagline": "A collection of notes, write ups and doodles.",
-  "intro": "A place a created to store my various mathematical scribbles.",
+  "intro": "A place I created to store my various mathematical scribbles.",
   "categories": [
     {
       "folder": "summary-notes",
@@ -24,5 +24,5 @@
       "label": "Style Guide"
     }
   ],
-  "about": "Axiomathic is built from LaTeX source. Copyright 2026."
+  "about": "Axiomathic is built from LaTeX source. Copyright Harrison Burton 2026."
 }

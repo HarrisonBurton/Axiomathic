@@ -1,0 +1,34 @@
+# LaTeX build products
+*.aux
+*.bbl
+*.blg
+*.idx
+*.ilg
+*.ind
+*.lof
+*.log
+*.lot
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+
+# lwarp generated files
+*_html.*
+*.lwarpmkconf
+lwarp.css
+lwarp.ist
+lwarp.xdy
+comment_*.cut
+lateximages/
+*-images.txt
+
+# generated publication outputs
+site/
+site.css
+Axiomathic.pdf
+
+# OS/editor noise
+.DS_Store
+Thumbs.db

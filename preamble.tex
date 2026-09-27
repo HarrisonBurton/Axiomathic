@@ -1,0 +1,162 @@
+\usepackage{blindtext}
+
+% Axiomathic web export. lwarp must load before array/tikz/etc., but
+% standalone subfiles should remain ordinary PDFs.
+\makeatletter
+\@ifclassloaded{subfiles}{}{%%
+  \usepackage[mathjax,HomeHTMLFilename=index]{lwarp}
+  \setcounter{FileDepth}{0}
+  \setcounter{SideTOCDepth}{1}
+  \CSSFilename{site.css}
+  \providecommand{\cs}[1]{\texttt{\textbackslash#1}}
+}
+\makeatother
+
+
+% Graphics / maths
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+% Theorem styling
+\usepackage{xcolor}
+\usepackage{thmtools}
+\usepackage{tcolorbox}
+\usepackage{mdframed}
+\tcbuselibrary{theorems}
+
+
+% Other packages
+\usepackage{xparse}
+\usepackage{float}
+\usepackage{imakeidx}
+
+\usepackage{tabularx}
+\usepackage{colortbl}
+\usepackage{longtable}
+\usepackage{arydshln}
+\usepackage{array}
+\usepackage{subfiles}
+
+\usepackage{tikz}
+
+%specifically for checklist tables
+\newcolumntype{R}{>{\raggedright\arraybackslash}p{3.0cm}}
+
+%completed tickbox symbol
+\newcommand{\squaretick}{%
+  \makebox[0pt][l]{$\square$}%
+  \raisebox{.15ex}{\hspace{0.1em}$\checkmark$}%
+}
+
+%tally counter
+\newcommand{\Tally}[2][]{\begin{tikzpicture}[baseline,#1]
+\foreach \X [evaluate=\X as \Y using {int(mod(\X,5))}]in {1,...,#2}
+{\ifnum\Y=0
+\draw (\X*0.5ex+0.3ex,0) -- ++(-2.2ex,1.8ex);
+\else
+\draw (\X*0.5ex+0.3ex,0) -- ++(0.3ex,1.8ex);
+\fi}
+\end{tikzpicture}}
+
+\def\multiset#1#2{\ensuremath{\left(\kern-.3em\left(\genfrac{}{}{0pt}{}{#1}{#2}\right)\kern-.3em\right)}}
+\newmdtheoremenv{boxtheorem}{Theorem}
+\newcommand{\textoverline}[1]{$\overline{\mbox{#1}}$}
+\makeindex
+\DeclareUnicodeCharacter{2009}{ }
+\newcommand\mybox[2][]{\tikz[overlay]\node[fill=blue!20,inner sep=2pt, anchor=text, rectangle, rounded corners=0mm,#1] {#2};\phantom{#2}}
+
+% Set the overall layout of the tree
+\tikzstyle{level 1}=[level distance=3.5cm, sibling distance=3.5cm]
+\tikzstyle{level 2}=[level distance=3.5cm, sibling distance=2cm]
+% Define styles for bags and leafs
+\tikzstyle{bag} = [text width=4em, text centered]
+\tikzstyle{end} = [circle, minimum width=3pt,fill, inner sep=0pt]
+
+
+
+
+%custom theorem-like environments
+\declaretheorem[
+numberwithin=chapter,  shaded={ padding=6pt, leftmargin=-6pt, rightmargin=-6pt, rulecolor=red!10, rulewidth=2pt, bgcolor=red!10},
+  name=Theorem,
+]{theorem}
+
+\declaretheorem[
+numberlike=theorem,  shaded={ padding=6pt, leftmargin=-6pt, rightmargin=-6pt, rulecolor=yellow!26, rulewidth=0pt, bgcolor=yellow!26},
+  name=Lemma,
+]{lemma}
+
+\declaretheorem[
+numberlike=theorem,  shaded={ padding=6pt, leftmargin=-6pt, rightmargin=-6pt, rulecolor=yellow!26, rulewidth=0pt, bgcolor=yellow!26},
+  name=Proposition,
+]{prop}
+
+\declaretheorem[
+numberlike=theorem,  shaded={ padding=6pt, leftmargin=-6pt, rightmargin=-6pt, rulecolor=yellow!26, rulewidth=0pt, bgcolor=yellow!26},
+  name=Corollary,
+]{corollary}
+
+\declaretheorem[
+numberlike=theorem,  shaded={ padding=6pt, leftmargin=-6pt, rightmargin=-6pt, rulecolor=cyan!18, rulewidth=0pt, bgcolor=cyan!18},
+  name=Definition,
+]{defn}
+
+\declaretheorem[
+numberlike=theorem,  shaded={ padding=6pt, leftmargin=-6pt, rightmargin=-6pt, rulecolor=cyan!18, rulewidth=0pt, bgcolor=cyan!18},
+  name=Notation,
+]{nota}
+
+\declaretheorem[
+numberlike=theorem,  shaded={ padding=6pt, leftmargin=-6pt, rightmargin=-6pt, rulecolor=gray!12, rulewidth=0pt, bgcolor=gray!12},
+  name=Conjecture,
+]{conj}
+
+
+\declaretheorem[
+numbered=no,  shaded={ padding=6pt, leftmargin=-6pt, rightmargin=-6pt, rulecolor=black, rulewidth=1pt, bgcolor=green!12},
+  name=Example,
+]{example}
+
+\declaretheorem[
+numbered=no,  shaded={ padding=6pt, leftmargin=-6pt, rightmargin=-6pt, rulecolor=black, rulewidth=0pt, bgcolor=white},
+  name=Remark,
+]{remark}
+% Commands required by Shuffling Cards when included as a subfile
+\ExplSyntaxOn
+\NewDocumentCommand{\cycle}{ O{\;} m }
+ {
+  (
+  \axiom_cycle:nn { #1 } { #2 }
+  )
+ }
+\seq_new:N \l_axiom_cycle_seq
+\cs_new_protected:Npn \axiom_cycle:nn #1 #2
+ {
+  \seq_set_split:Nnn \l_axiom_cycle_seq { , } { #2 }
+  \seq_use:Nn \l_axiom_cycle_seq { #1 }
+ }
+\ExplSyntaxOff
+\DeclareMathOperator{\lcm}{lcm}
+
+% Dependencies required by Easier Waring when included as a subfile
+\usepackage{mathtools}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{bm}
+\hypersetup{colorlinks=true,linkcolor=blue!55!black,citecolor=blue!55!black,urlcolor=blue!55!black}
+\newtheorem{warning}[theorem]{Caution}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\T}{\mathbb T}
+\newcommand{\F}{\mathbb F}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\e}{\mathrm e}
+\newcommand{\calP}{\mathcal P}
+\newcommand{\calR}{\mathcal R}
+\newcommand{\ord}{\operatorname{ord}}

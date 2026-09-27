@@ -1,0 +1,528 @@
+/* Axiomathic web theme layered over lwarp.css. */
+:root {
+  --navy: #102c4d;
+  --navy-deep: #0b223d;
+  --blue: #1263a8;
+  --blue-soft: #eef6fc;
+  --gold: #d59a2d;
+  --gold-soft: #fff8e9;
+  --green: #17754b;
+  --green-soft: #edf8f1;
+  --paper: #fffdf9;
+  --paper-2: #faf8f3;
+  --sidebar: #f7f6f2;
+  --ink: #18283b;
+  --muted: #627083;
+  --line: #dde3e8;
+  --shadow: 0 8px 30px rgba(15, 35, 60, 0.08);
+  --header-h: 72px;
+  --left-w: 330px;
+  --right-w: 270px;
+  --content-w: 880px;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 22px); }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--blue); text-decoration-thickness: .06em; text-underline-offset: .13em; }
+a:hover { color: #0b4d87; }
+
+/* Modern global header */
+.ax-header {
+  position: fixed;
+  z-index: 1000;
+  inset: 0 0 auto 0;
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  gap: 2.4rem;
+  padding: 0 2.25rem;
+  color: #fff;
+  background: linear-gradient(110deg, var(--navy), var(--navy-deep));
+  box-shadow: 0 1px 0 rgba(255,255,255,.08), 0 5px 20px rgba(8,25,43,.12);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+.ax-brand {
+  min-width: 245px;
+  color: #fff;
+  text-decoration: none;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -.025em;
+}
+.ax-brand-mark { color: #f2c66d; }
+.ax-nav { display: flex; align-items: stretch; height: 100%; gap: .25rem; }
+.ax-nav a, .ax-nav span {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  color: rgba(255,255,255,.86);
+  text-decoration: none;
+  font-size: 15px;
+  white-space: nowrap;
+}
+.ax-nav a.active { color: #fff; font-weight: 600; }
+.ax-nav a.active::after {
+  content: "";
+  position: absolute;
+  left: .9rem; right: .9rem; bottom: 10px;
+  height: 3px; border-radius: 2px;
+  background: #f1c96d;
+}
+.ax-tools { margin-left: auto; display: flex; align-items: center; gap: .65rem; }
+.ax-search {
+  display: flex; align-items: center; gap: .55rem;
+  width: 235px; height: 40px; padding: 0 .85rem;
+  border: 1px solid rgba(255,255,255,.26); border-radius: 7px;
+  background: rgba(255,255,255,.035);
+}
+.ax-search svg { flex: none; opacity: .9; }
+.ax-search input {
+  width: 100%; border: 0; outline: 0; color: #fff; background: transparent;
+  font: 14px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+.ax-search input::placeholder { color: rgba(255,255,255,.72); }
+.ax-iconbtn {
+  width: 38px; height: 38px; border: 0; border-radius: 7px;
+  background: transparent; color: #fff; cursor: pointer;
+  display: grid; place-items: center;
+}
+.ax-iconbtn:hover { background: rgba(255,255,255,.09); }
+
+/* Suppress lwarp's simple top nav; custom header replaces it. */
+.topnavigation { display: none !important; }
+body { padding-top: var(--header-h); }
+
+/* Left document navigation */
+.bodyandsidetoc { width: 100%; max-width: none; margin: 0; }
+.sidetoccontainer {
+  position: fixed;
+  z-index: 50;
+  top: var(--header-h);
+  bottom: 0;
+  left: 0;
+  width: var(--left-w);
+  overflow-y: auto;
+  padding: 1.55rem 1rem 2rem 1.45rem;
+  background: var(--sidebar);
+  border-right: 1px solid var(--line);
+  scrollbar-width: thin;
+}
+.sidetoc {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 1.35;
+}
+.sidetoctitle { margin-bottom: 1rem; padding: .25rem .8rem .9rem; }
+.sidetoctitle > p:last-child { display: none; }
+.sidetocthetitle {
+  color: var(--navy);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 19px;
+  line-height: 1.25;
+}
+.sidetocthetitle br { display: block; margin-bottom: .2rem; }
+.sidetoccontents p { margin: .22rem 0; }
+.sidetoccontents p:first-child { display: none; }
+.sidetoc a {
+  display: block;
+  position: relative;
+  padding: .58rem .72rem;
+  border-radius: 6px;
+  color: #394a5e;
+  text-decoration: none;
+  transition: background .15s ease, color .15s ease;
+}
+.sidetoc a:hover { background: #eeece6; color: var(--navy); }
+.sidetoc a.is-current {
+  color: var(--navy);
+  font-weight: 600;
+  background: #eee9df;
+}
+.sidetoc a.is-current::after {
+  content: "›";
+  position: absolute; right: .65rem; top: 50%; transform: translateY(-52%);
+  color: #98a0a8; font-size: 21px; font-weight: 400;
+}
+.sidetoc .sectionnumber { display: inline-block; min-width: 1.7rem; color: #6f7a87; }
+.ax-search-hit { outline: 2px solid rgba(18,99,168,.18); background: #f1f6fa !important; }
+
+/* Main reading column */
+.bodycontainer {
+  width: auto;
+  max-width: var(--content-w);
+  margin: 0 var(--right-w) 0 var(--left-w);
+  padding: 2.25rem 3rem 5rem;
+}
+section.textbody { max-width: 100%; }
+body:not(.ax-home) section.textbody > h1:first-of-type { display: none; }
+
+h1, h2, h3, h4, h5, h6 { color: var(--navy); font-weight: 650; }
+h1 { font-size: 2.7rem; line-height: 1.09; letter-spacing: -.025em; }
+h4 {
+  font-size: 2.55rem;
+  line-height: 1.1;
+  letter-spacing: -.025em;
+  margin: .6rem 0 1.15rem;
+}
+h4::before {
+  content: "SECTION " attr(data-section);
+  display: block;
+  margin-bottom: .55rem;
+  color: #6e7a89;
+  font: 600 11px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: .08em;
+}
+h5 {
+  font-size: 1.55rem;
+  line-height: 1.2;
+  margin: 1.9rem 0 .7rem;
+  letter-spacing: -.012em;
+}
+h6 { font-size: 1.15rem; margin: 1.5rem 0 .55rem; }
+p { margin: .75rem 0 1rem; }
+.sectionnumber { font-variant-numeric: tabular-nums; }
+
+/* Home/landing page */
+.ax-home .bodycontainer { max-width: 1020px; }
+.ax-home section.textbody > h1:first-of-type {
+  margin: 1rem 0 1.4rem;
+  padding: 2.1rem 2.2rem;
+  border: 1px solid #e4e8ec;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f8fbff 0%, #fffdf9 62%);
+  box-shadow: var(--shadow);
+}
+.ax-home .titlepage { border: 0; }
+
+/* Theorem-style callouts */
+.amsthmbodydefinition, .amsthmbodyplain, .amsthmbodyremark {
+  margin: 1.45rem 0;
+  padding: .95rem 1.15rem .9rem;
+  border: 0;
+  border-left: 4px solid #63a4d8;
+  border-radius: 5px;
+  background: linear-gradient(90deg, var(--blue-soft), #f7fbfe);
+  box-shadow: inset 0 0 0 1px rgba(72,135,183,.07);
+}
+.amsthmbodydefinition > ul, .amsthmbodyplain > ul, .amsthmbodyremark > ul { margin: 0; padding: 0; }
+.amsthmnamedefinition, .amsthmnameplain, .amsthmnameremark,
+.amsthmnumberdefinition, .amsthmnumberplain, .amsthmnumberremark,
+.amsthmnotedefinition, .amsthmnoteplain, .amsthmnoteremark {
+  color: #145a93;
+  font-weight: 700;
+}
+.callout-conjecture {
+  background: linear-gradient(90deg, var(--gold-soft), #fffaf0);
+  border-left-color: #c88916;
+}
+.callout-conjecture .amsthmnamedefinition,
+.callout-conjecture .amsthmnumberdefinition,
+.callout-conjecture .amsthmnotedefinition { color: #9b5b00; }
+.callout-theorem {
+  background: linear-gradient(90deg, var(--green-soft), #f5fbf7);
+  border-left-color: #1a9661;
+}
+.callout-theorem .amsthmnameplain,
+.callout-theorem .amsthmnumberplain,
+.callout-theorem .amsthmnoteplain { color: #167347; }
+.callout-warning, .fbox {
+  background: #fff7f4 !important;
+  border: 1px solid #f0d7cc !important;
+  border-left: 4px solid #c66a40 !important;
+  border-radius: 5px !important;
+  padding: .9rem 1.05rem !important;
+}
+
+/* Equations, tables, code and figures */
+mjx-container[display="true"] { margin: 1.2rem 0 !important; overflow-x: auto; overflow-y: hidden; }
+table { border-collapse: collapse; width: auto; max-width: 100%; margin: 1.6rem auto; font-size: .96em; }
+th { color: var(--navy); background: #f5f7f9; font-weight: 700; }
+th, td { padding: .62rem .8rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+pre {
+  overflow-x: auto; padding: 1rem 1.1rem; border: 1px solid var(--line); border-radius: 7px;
+  background: #f7f8fa; font-size: .86em;
+}
+code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .9em; }
+figure.figure { margin: 3.2rem auto 1.5rem; text-align: center; }
+figure.figure img {
+  max-width: min(100%, 620px); width: auto !important; height: auto;
+  border-radius: 8px; box-shadow: 0 14px 35px rgba(15,35,60,.13);
+}
+.figurecaption { margin-top: .7rem; color: #556274; font-size: .92rem; font-style: normal; }
+
+/* Right rail */
+.ax-right-rail {
+  position: fixed;
+  z-index: 40;
+  top: calc(var(--header-h) + 30px);
+  right: 1.3rem;
+  width: calc(var(--right-w) - 2rem);
+  max-height: calc(100vh - var(--header-h) - 54px);
+  overflow-y: auto;
+  padding: 0 .15rem 1.4rem 1.2rem;
+  border-left: 1px solid var(--line);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 13px;
+}
+.ax-right-rail h3 {
+  margin: 0 0 .7rem;
+  padding: 0 0 .65rem;
+  border-bottom: 1px solid var(--line);
+  font: 700 14px/1.2 Georgia, "Times New Roman", serif;
+  color: var(--navy);
+}
+.ax-onpage { margin: 0; padding: 0; list-style: none; }
+.ax-onpage li { margin: .16rem 0; }
+.ax-onpage a {
+  display: block; padding: .36rem .5rem; border-left: 2px solid transparent;
+  color: #4a5a6d; text-decoration: none; line-height: 1.35;
+}
+.ax-onpage a:hover, .ax-onpage a.active { color: var(--blue); border-left-color: #58a0d4; }
+.ax-rail-tools { margin-top: 1.25rem; padding-top: .8rem; border-top: 1px solid var(--line); }
+.ax-rail-action {
+  display: flex; gap: .58rem; align-items: center;
+  width: 100%; padding: .47rem .38rem; color: var(--navy); background: none; border: 0;
+  text-align: left; text-decoration: none; font: 500 13px/1.3 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  cursor: pointer; border-radius: 5px;
+}
+.ax-rail-action:hover { background: #f2f5f8; color: var(--blue); }
+.ax-rail-action svg { width: 17px; height: 17px; flex: none; }
+.ax-copy-status { color: var(--green); font-size: 11px; padding-left: 2.15rem; min-height: 1em; }
+
+/* Footer navigation */
+.botnavigation {
+  max-width: var(--content-w);
+  margin: 2rem var(--right-w) 0 var(--left-w);
+  padding: 1.2rem 3rem 2rem;
+  border-top: 1px solid var(--line);
+  font: 13px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+.botnavigation a { color: var(--blue); text-decoration: none; }
+
+/* Dark mode */
+body.ax-dark {
+  --paper: #111b27; --paper-2: #172231; --sidebar: #15202d; --ink: #e7edf3;
+  --muted: #a5b0bc; --line: #2d3b4b; --blue-soft: #172b3b; --gold-soft: #302817;
+  --green-soft: #183026;
+}
+body.ax-dark .ax-header { background: #0a1c31; }
+body.ax-dark h1, body.ax-dark h2, body.ax-dark h3, body.ax-dark h4, body.ax-dark h5, body.ax-dark h6,
+body.ax-dark .sidetocthetitle, body.ax-dark .ax-right-rail h3 { color: #f0f4f8; }
+body.ax-dark .sidetoc a { color: #bcc7d1; }
+body.ax-dark .sidetoc a:hover, body.ax-dark .sidetoc a.is-current { background: #202d3b; color: #fff; }
+body.ax-dark .amsthmbodydefinition, body.ax-dark .amsthmbodyplain, body.ax-dark .amsthmbodyremark { box-shadow: none; }
+body.ax-dark table th { background: #1a2735; color: #f0f4f8; }
+body.ax-dark pre { background: #182431; }
+body.ax-dark .ax-home section.textbody > h1:first-of-type { background: #152130; border-color: var(--line); }
+
+/* Responsive behaviour */
+@media (max-width: 1280px) {
+  :root { --right-w: 0px; }
+  .ax-right-rail { display: none; }
+  .bodycontainer { margin-right: 0; }
+  .botnavigation { margin-right: 0; }
+}
+@media (max-width: 980px) {
+  :root { --left-w: 0px; }
+  .sidetoccontainer { display: none; }
+  .bodycontainer { margin-left: 0; padding: 2rem 1.5rem 4rem; max-width: 850px; }
+  .botnavigation { margin-left: 0; padding-left: 1.5rem; padding-right: 1.5rem; }
+  .ax-brand { min-width: auto; font-size: 1.65rem; }
+  .ax-nav { display: none; }
+  .ax-search { width: min(42vw, 240px); }
+  h4 { font-size: 2.1rem; }
+}
+@media (max-width: 620px) {
+  :root { --header-h: 62px; }
+  .ax-header { padding: 0 1rem; gap: .8rem; }
+  .ax-brand { font-size: 1.45rem; }
+  .ax-search { display: none; }
+  .bodycontainer { padding: 1.55rem 1rem 3rem; }
+  body { font-size: 16px; }
+  h4 { font-size: 1.8rem; }
+  h5 { font-size: 1.3rem; }
+}
+
+/* =========================================================
+   Axiomathic book layout overrides
+   The LaTeX source uses book -> chapter -> section -> subsection.
+   ========================================================= */
+
+/* Left rail hierarchy */
+.sidetoc a.tocchapter {
+  margin-top: .55rem;
+  color: var(--navy);
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 700;
+  font-size: 15px;
+}
+.sidetoc a.tocsection {
+  padding-left: 1.75rem;
+  font-size: 13px;
+}
+.sidetoc a.tocsection .sectionnumber { min-width: 2.25rem; }
+
+/* Chapter title: the main hero on each generated page. */
+body:not(.ax-home) section.textbody > h3:first-of-type {
+  margin: .55rem 0 1.35rem;
+  font-size: 2.75rem;
+  line-height: 1.08;
+  letter-spacing: -.028em;
+}
+body:not(.ax-home) section.textbody > h3:first-of-type::before {
+  content: "AXIOMATHIC · MATHEMATICS";
+  display: block;
+  margin-bottom: .7rem;
+  color: #6e7a89;
+  font: 650 11px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: .105em;
+}
+
+/* In book mode h4 is a section, h5 a subsection. */
+h4 {
+  margin: 2.45rem 0 .85rem;
+  font-size: 1.72rem;
+  line-height: 1.18;
+  letter-spacing: -.014em;
+}
+h4::before { display: none; }
+h5 {
+  margin: 1.85rem 0 .65rem;
+  font-size: 1.34rem;
+  line-height: 1.2;
+}
+
+/* lwarp emits a shadebox around thmtools shaded environments.  Website
+   colours deliberately live here rather than in the LaTeX source. */
+div.shadebox {
+  margin: 1.5rem 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-left: 4px solid #63a4d8 !important;
+  border-radius: 6px !important;
+  background: linear-gradient(90deg, var(--blue-soft), #f8fbfe) !important;
+  box-shadow: inset 0 0 0 1px rgba(72,135,183,.075);
+}
+div.shadebox .amsthmbodyplain,
+div.shadebox .amsthmbodydefinition,
+div.shadebox .amsthmbodyremark {
+  margin: 0 !important;
+  padding: 1rem 1.18rem .95rem !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+div.shadebox.ax-definition,
+div.shadebox.ax-notation {
+  border-left-color: #4b96cf !important;
+  background: linear-gradient(90deg, #edf6fc, #f8fbfe) !important;
+}
+div.shadebox.ax-conjecture {
+  border-left-color: #c88916 !important;
+  background: linear-gradient(90deg, #fff5df, #fffaf0) !important;
+}
+div.shadebox.ax-theorem,
+div.shadebox.ax-lemma,
+div.shadebox.ax-proposition,
+div.shadebox.ax-corollary {
+  border-left-color: #26875b !important;
+  background: linear-gradient(90deg, #edf8f1, #f7fbf8) !important;
+}
+div.shadebox.ax-example {
+  border-left-color: #7a8794 !important;
+  background: linear-gradient(90deg, #f3f5f6, #fafafa) !important;
+}
+div.shadebox.ax-warning {
+  border-left-color: #bc6442 !important;
+  background: linear-gradient(90deg, #fff2ed, #fff9f6) !important;
+}
+
+/* Home page becomes a simple publication landing page. */
+.ax-home .titlepage {
+  margin: 1.25rem 0 2rem;
+  padding: 2.7rem 2.8rem 2.45rem;
+  border: 1px solid #e2e7eb;
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 88% 15%, rgba(213,154,45,.13), transparent 18%),
+    linear-gradient(135deg, #f6faff 0%, #fffdf9 64%);
+  box-shadow: var(--shadow);
+}
+.ax-home .titlepage h1 {
+  margin: 0 0 .8rem;
+  font-size: 3.35rem;
+  letter-spacing: -.04em;
+}
+.ax-home .titlepage .author,
+.ax-home .titlepage .titledate {
+  color: var(--muted);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+.ax-home nav.toc {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .75rem 1rem;
+  margin-top: 1rem;
+}
+.ax-home nav.toc > p { margin: 0; }
+.ax-home nav.toc a {
+  display: block;
+  min-height: 100%;
+  padding: .9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255,255,255,.58);
+  text-decoration: none;
+}
+.ax-home nav.toc a.tocchapter {
+  grid-column: 1 / -1;
+  margin-top: .7rem;
+  padding: 1.05rem 1.1rem;
+  color: var(--navy);
+  background: #f3f6f9;
+  font: 700 1.05rem/1.3 Georgia, "Times New Roman", serif;
+}
+.ax-home nav.toc a.tocsubsection { display: none; }
+.ax-home nav.toc a.tocsection { font-size: .92rem; }
+
+/* Right rail nesting */
+.ax-onpage .ax-subsection a { padding-left: 1rem; font-size: 12px; color: #6a7786; }
+
+/* Bibliography generated as a pseudo chapter should remain readable. */
+.thebibliography { font-size: .95em; }
+
+body.ax-dark div.shadebox.ax-definition,
+body.ax-dark div.shadebox.ax-notation { background: #172b3b !important; }
+body.ax-dark div.shadebox.ax-conjecture { background: #302817 !important; }
+body.ax-dark div.shadebox.ax-theorem,
+body.ax-dark div.shadebox.ax-lemma,
+body.ax-dark div.shadebox.ax-proposition,
+body.ax-dark div.shadebox.ax-corollary { background: #183026 !important; }
+body.ax-dark div.shadebox.ax-example { background: #202a34 !important; }
+body.ax-dark div.shadebox.ax-warning { background: #36231e !important; }
+body.ax-dark .ax-home .titlepage { background: #152130; border-color: var(--line); }
+body.ax-dark .ax-home nav.toc a { background: #182431; }
+body.ax-dark .ax-home nav.toc a.tocchapter { background: #1c2a39; color: #f0f4f8; }
+
+@media (max-width: 980px) {
+  body:not(.ax-home) section.textbody > h3:first-of-type { font-size: 2.25rem; }
+  .ax-home nav.toc { grid-template-columns: 1fr; }
+  .ax-home .titlepage { padding: 2rem 1.7rem; }
+}
+@media (max-width: 620px) {
+  body:not(.ax-home) section.textbody > h3:first-of-type { font-size: 1.95rem; }
+  h4 { font-size: 1.48rem; }
+  h5 { font-size: 1.22rem; }
+  .ax-home .titlepage h1 { font-size: 2.45rem; }
+}

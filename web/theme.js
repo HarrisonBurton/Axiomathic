@@ -109,6 +109,18 @@
         </div>
       </section>`).join('');
 
+    const utilityCards = (CONFIG.utilityPages || []).length ? `
+      <section class="ax-home-section" id="style-guide">
+        <div class="ax-section-heading"><span>Style Guide</span><p>Reference examples for theorem environments and notation used across Axiomathic.</p></div>
+        <div class="ax-utility-grid">
+          ${(CONFIG.utilityPages || []).map(p => `
+            <a class="ax-utility-card" href="${p.file}">
+              <strong>${p.title}</strong>
+              <span>Review the theorem, definition, notation, conjecture and related environment styles.</span>
+            </a>`).join('')}
+        </div>
+      </section>` : '';
+
     const utilityLinks = (CONFIG.utilityPages || []).map(p =>
       `<a href="${p.file}">${p.title}</a>`
     ).join('');
@@ -121,6 +133,7 @@
           <p>${CONFIG.intro || ''}</p>
         </section>
         ${sectionHtml}
+        ${utilityCards}
         <section class="ax-home-section" id="about">
           <div class="ax-section-heading"><span>About</span></div>
           <div class="ax-about-panel">

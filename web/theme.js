@@ -13,20 +13,30 @@
   }
 
   function addHeader() {
+    const file = location.pathname.split('/').pop() || 'index.html';
     const header = document.createElement('header');
     header.className = 'ax-header';
     header.innerHTML = `
-      <a class="ax-brand" href="index.html" aria-label="Axiomathic home"><span class="ax-brand-mark">A</span>xiomathic</a>
+      <a class="ax-brand" href="index.html" aria-label="Axiomathic home">
+        <span class="ax-brand-mark" aria-hidden="true"><span class="ax-alpha">α</span></span><span class="ax-wordmark">xiomathic</span>
+      </a>
       <nav class="ax-nav" aria-label="Site navigation">
-        <a href="index.html">Home</a>
-        <a href="index.html" class="active">Mathematics</a>
-        <span>Notes</span><span>Projects</span><span>About</span>
+        <a href="index.html" data-nav="home">Home</a>
+        <a href="index.html#notes" data-nav="notes">Summary Notes</a>
+        <a href="index.html#projects" data-nav="projects">Projects</a>
+        <a href="Theorem-Style-Guide.html" data-nav="style">Style Guide</a>
+        <a href="index.html#about" data-nav="about">About</a>
       </nav>
       <div class="ax-tools">
         <label class="ax-search" aria-label="Search the contents">${icon('search')}<input id="ax-search-input" type="search" placeholder="Search contents…"></label>
         <button class="ax-iconbtn" id="ax-theme-toggle" type="button" aria-label="Toggle dark mode">${icon('sun')}</button>
       </div>`;
     document.body.prepend(header);
+
+    if (file === 'index.html' || file === '') $('[data-nav="home"]')?.classList.add('active');
+    else if (file === 'Theorem-Style-Guide.html') $('[data-nav="style"]')?.classList.add('active');
+    else if (file === 'Shuffling-Cards.html') $('[data-nav="notes"]')?.classList.add('active');
+    else if (file === 'The-easier-Waring-problem.html') $('[data-nav="projects"]')?.classList.add('active');
   }
 
   function markPage() {
@@ -47,6 +57,50 @@
     });
   }
 
+  function buildLanding() {
+    if (!document.body.classList.contains('ax-home')) return;
+    const body = $('section.textbody');
+    if (!body) return;
+    body.innerHTML = `
+      <main class="ax-landing" aria-label="Axiomathic home">
+        <section class="ax-hero">
+          <div class="ax-kicker">AXIOMATHIC</div>
+          <h1>Mathematics, carefully written.</h1>
+          <p>A growing collection of summary notes, mathematical explorations and longer-form projects, all written in LaTeX and published directly to the web.</p>
+        </section>
+
+        <section class="ax-home-section" id="notes">
+          <div class="ax-section-heading"><span>Summary Notes</span><p>Compact write-ups and worked mathematical ideas.</p></div>
+          <div class="ax-card-grid">
+            <a class="ax-home-card" href="Shuffling-Cards.html">
+              <span class="ax-card-eyebrow">NOTE</span>
+              <strong>Shuffling Cards</strong>
+              <span>Permutation groups, perfect shuffles and the mathematics of returning a deck to its original order.</span>
+            </a>
+          </div>
+        </section>
+
+        <section class="ax-home-section" id="projects">
+          <div class="ax-section-heading"><span>Projects</span><p>Longer investigations and research-style write-ups.</p></div>
+          <div class="ax-card-grid">
+            <a class="ax-home-card" href="The-easier-Waring-problem.html">
+              <span class="ax-card-eyebrow">PROJECT</span>
+              <strong>The Easier Waring Problem</strong>
+              <span>Density, local obstructions and conjectural structure in signed sums of powers.</span>
+            </a>
+          </div>
+        </section>
+
+        <section class="ax-home-section" id="about">
+          <div class="ax-section-heading"><span>About</span></div>
+          <div class="ax-about-panel">
+            <p>Axiomathic is built from a single LaTeX source: the same files generate the traditional PDF and this web edition. The visual layer is deliberately separate, so mathematical source files stay clean while the site can evolve independently.</p>
+            <p class="ax-home-actions"><a href="Axiomathic.pdf" target="_blank" rel="noopener">View compiled PDF</a><a href="Theorem-Style-Guide.html">View theorem style guide</a></p>
+          </div>
+        </section>
+      </main>`;
+  }
+
   function addRightRail() {
     if (document.body.classList.contains('ax-home')) return;
     const headings = $$('section.textbody h4, section.textbody h5');
@@ -58,7 +112,7 @@
       $('.sectionnumber', clone)?.remove();
       const cls = h.tagName.toLowerCase() === 'h5' ? ' class="ax-subsection"' : '';
       return `<li${cls}><a href="#${h.id}">${number ? number + ' ' : ''}${clone.textContent.trim()}</a></li>`;
-    }).join('') : '<li><span style="color:#7a8795">No sections on this page</span></li>';
+    }).join('') : '<li><span class="ax-quiet">No sections on this page</span></li>';
     rail.innerHTML = `
       <h3>On this page</h3>
       <ol class="ax-onpage">${list}</ol>
@@ -73,14 +127,14 @@
   function wireSearch() {
     const input = $('#ax-search-input');
     if (!input) return;
-    const links = $$('.sidetoccontents a, .ax-home nav.toc a');
+    const links = $$('.sidetoccontents a, .ax-home-card');
     input.addEventListener('input', () => {
       const q = input.value.trim().toLowerCase();
       links.forEach(a => a.classList.toggle('ax-search-hit', q.length > 1 && a.textContent.toLowerCase().includes(q)));
     });
     input.addEventListener('keydown', e => {
       if (e.key === 'Enter') {
-        const hit = $('.sidetoccontents a.ax-search-hit, .ax-home nav.toc a.ax-search-hit');
+        const hit = $('.sidetoccontents a.ax-search-hit, .ax-home-card.ax-search-hit');
         if (hit) location.href = hit.href;
       }
     });
@@ -109,9 +163,10 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    addHeader();
     markPage();
+    addHeader();
     styleCallouts();
+    buildLanding();
     addRightRail();
     wireSearch();
     wireTheme();

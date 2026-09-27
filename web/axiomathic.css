@@ -526,3 +526,196 @@ body.ax-dark .ax-home nav.toc a.tocchapter { background: #1c2a39; color: #f0f4f8
   h5 { font-size: 1.22rem; }
   .ax-home .titlepage h1 { font-size: 2.45rem; }
 }
+
+
+/* =========================================================
+   Axiomathic v2 refinements
+   ========================================================= */
+:root {
+  --header-h: 66px;
+  --left-w: 300px;
+  --right-w: 250px;
+  --content-w: 820px;
+}
+body {
+  font-size: 15.5px;
+  line-height: 1.58;
+}
+.ax-header { padding: 0 1.8rem; gap: 1.8rem; }
+.ax-brand {
+  min-width: 218px;
+  display: inline-flex;
+  align-items: baseline;
+  color: #fff !important;
+  font-size: 1.72rem;
+  letter-spacing: -.03em;
+}
+.ax-brand-mark {
+  position: relative;
+  display: inline-block;
+  width: .79em;
+  margin-right: .02em;
+  color: #fff !important;
+  line-height: 1;
+}
+.ax-alpha { color: #fff; }
+.ax-brand-mark::after {
+  content: "↗";
+  position: absolute;
+  top: -.39em;
+  right: -.27em;
+  color: #fff;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: .48em;
+  font-weight: 400;
+  transform: rotate(-4deg);
+}
+.ax-wordmark { color: #fff; }
+.ax-nav a, .ax-nav span { padding: 0 .82rem; font-size: 13.5px; }
+.ax-search { width: 205px; height: 36px; }
+.ax-search input { font-size: 13px; }
+.ax-iconbtn { width: 35px; height: 35px; }
+
+.sidetoccontainer { padding: 1.35rem .9rem 1.8rem 1.2rem; }
+.sidetoc { font-size: 13px; }
+.sidetocthetitle { font-size: 17px; }
+.sidetoc a { padding: .48rem .62rem; }
+.sidetoc a.tocchapter { font-size: 14px; }
+.sidetoc a.tocsection { font-size: 12px; }
+
+.bodycontainer { padding: 1.85rem 2.55rem 4.5rem; }
+body:not(.ax-home) section.textbody > h3:first-of-type {
+  margin: .4rem 0 1.15rem;
+  font-size: 2.18rem;
+  line-height: 1.1;
+}
+h4 { margin: 2.05rem 0 .7rem; font-size: 1.43rem; }
+h5 { margin: 1.55rem 0 .55rem; font-size: 1.16rem; }
+h6 { font-size: 1.02rem; }
+p { margin: .62rem 0 .88rem; }
+mjx-container[display="true"] { margin: 1.0rem 0 !important; }
+
+/* The web colour system, independent of the PDF theorem palette. */
+div.shadebox { border-left-width: 3px !important; }
+div.shadebox .amsthmbodyplain,
+div.shadebox .amsthmbodydefinition,
+div.shadebox .amsthmbodyremark { padding: .82rem 1rem .8rem !important; }
+
+div.shadebox.ax-theorem {
+  border-left-color: #287a58 !important;
+  background: linear-gradient(90deg, #edf7f1, #f8fbf9) !important;
+}
+div.shadebox.ax-lemma,
+div.shadebox.ax-proposition,
+div.shadebox.ax-corollary {
+  border-left-color: #52796f !important;
+  background: linear-gradient(90deg, #f0f6f4, #fafcfb) !important;
+}
+div.shadebox.ax-definition {
+  border-left-color: #2f6f9f !important;
+  background: linear-gradient(90deg, #edf5fb, #f8fbfe) !important;
+}
+div.shadebox.ax-notation {
+  border-left-color: #6b5b95 !important;
+  background: linear-gradient(90deg, #f3f0fa, #fbfaff) !important;
+}
+div.shadebox.ax-conjecture {
+  border-left-color: #b7791f !important;
+  background: linear-gradient(90deg, #fff7e5, #fffdf7) !important;
+}
+div.shadebox.ax-example {
+  border-left-color: #5d7a7a !important;
+  background: linear-gradient(90deg, #f1f5f5, #fafcfc) !important;
+}
+div.shadebox.ax-remark {
+  border-left-color: #8a929c !important;
+  background: linear-gradient(90deg, #f5f6f7, #fbfbfc) !important;
+}
+div.shadebox.ax-warning {
+  border-left-color: #b65f4a !important;
+  background: linear-gradient(90deg, #fff1ed, #fff9f7) !important;
+}
+/* Match heading/name colour to its callout family. */
+div.shadebox.ax-theorem .listmarker { color: #1f6649; }
+div.shadebox.ax-lemma .listmarker,
+div.shadebox.ax-proposition .listmarker,
+div.shadebox.ax-corollary .listmarker { color: #486c63; }
+div.shadebox.ax-definition .listmarker { color: #265e87; }
+div.shadebox.ax-notation .listmarker { color: #594b7d; }
+div.shadebox.ax-conjecture .listmarker { color: #966116; }
+div.shadebox.ax-example .listmarker { color: #4e6969; }
+div.shadebox.ax-remark .listmarker { color: #69727d; }
+div.shadebox.ax-warning .listmarker { color: #934b3a; }
+
+/* Purpose-built home page rather than exposing the raw LaTeX TOC. */
+.ax-home .sidetoccontainer { display: none !important; }
+.ax-home .bodycontainer {
+  max-width: 1030px;
+  margin: 0 auto;
+  padding: 2.6rem 2.2rem 5rem;
+}
+.ax-home .botnavigation { display: none; }
+.ax-landing { width: 100%; }
+.ax-hero {
+  padding: 2.8rem 3rem 2.6rem;
+  border: 1px solid #dfe6ec;
+  border-radius: 14px;
+  background: radial-gradient(circle at 86% 14%, rgba(213,154,45,.11), transparent 20%), linear-gradient(135deg, #f5f9fd 0%, #fffdf9 66%);
+  box-shadow: var(--shadow);
+}
+.ax-kicker {
+  margin-bottom: .7rem;
+  color: var(--blue);
+  font: 700 11px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: .15em;
+}
+.ax-hero h1 { margin: 0 0 .8rem; max-width: 720px; font-size: 2.65rem; line-height: 1.05; }
+.ax-hero p { max-width: 720px; margin: 0; color: var(--muted); font-size: 1.03rem; }
+.ax-home-section { margin-top: 2.65rem; scroll-margin-top: calc(var(--header-h) + 24px); }
+.ax-section-heading { display: flex; align-items: baseline; gap: 1rem; margin-bottom: .85rem; }
+.ax-section-heading > span { color: var(--navy); font: 700 1.35rem/1.2 Georgia, "Times New Roman", serif; }
+.ax-section-heading p { margin: 0; color: var(--muted); font: 13px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+.ax-card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .9rem; }
+.ax-home-card {
+  display: flex;
+  min-height: 150px;
+  flex-direction: column;
+  gap: .52rem;
+  padding: 1.25rem 1.35rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(255,255,255,.7);
+  color: var(--ink);
+  text-decoration: none;
+  box-shadow: 0 5px 20px rgba(15,35,60,.045);
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.ax-home-card:hover { transform: translateY(-2px); border-color: #c7d5df; box-shadow: 0 9px 24px rgba(15,35,60,.075); color: var(--ink); }
+.ax-card-eyebrow { color: var(--blue); font: 700 10px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; letter-spacing: .11em; }
+.ax-home-card strong { color: var(--navy); font: 700 1.12rem/1.25 Georgia, "Times New Roman", serif; }
+.ax-home-card > span:last-child { color: var(--muted); font: 13px/1.48 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+.ax-about-panel { padding: 1.2rem 1.35rem; border: 1px solid var(--line); border-radius: 10px; background: var(--paper-2); }
+.ax-home-actions { display: flex; gap: 1rem; flex-wrap: wrap; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 13px; }
+.ax-home-actions a { text-decoration: none; font-weight: 600; }
+.ax-quiet { color: #7a8795; }
+
+body.ax-dark .ax-hero { background: #152130; border-color: var(--line); }
+body.ax-dark .ax-home-card, body.ax-dark .ax-about-panel { background: #182431; }
+body.ax-dark .ax-home-card strong, body.ax-dark .ax-section-heading > span { color: #f0f4f8; }
+body.ax-dark div.shadebox.ax-notation { background: #241f35 !important; }
+body.ax-dark div.shadebox.ax-remark { background: #202832 !important; }
+
+@media (max-width: 980px) {
+  .ax-brand { font-size: 1.55rem; }
+  .bodycontainer { padding: 1.75rem 1.4rem 4rem; }
+  body:not(.ax-home) section.textbody > h3:first-of-type { font-size: 1.95rem; }
+  .ax-home .bodycontainer { padding: 2rem 1.4rem 4rem; }
+  .ax-card-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 620px) {
+  body { font-size: 15px; }
+  .ax-hero { padding: 2rem 1.45rem; }
+  .ax-hero h1 { font-size: 2.15rem; }
+  .ax-section-heading { display: block; }
+  .ax-section-heading p { margin-top: .3rem; }
+}

@@ -34,3 +34,42 @@ Open `site/index.html`. The same build also creates `Axiomathic.pdf` and copies 
 4. Each `\chapter` becomes its own page. Sections populate the navigation automatically.
 
 See `GITHUB-LAUNCH.md` for a first-time setup from a completely new GitHub account.
+
+
+## Axiomathic v2 refinements
+
+The web layer now uses a smaller typographic scale, an all-white alpha/arrow wordmark, a purpose-built landing page, MathJax definitions for the custom Axiomathic maths commands, and an explicit theorem colour system. `sections/Theorem Style Guide.tex` is a disposable visual test fixture for reviewing all theorem environments in one page.
+
+
+## Everyday website edits
+
+Most site-level changes now live in `web/site-config.json`.
+
+### Change the homepage tagline
+
+Edit:
+
+```json
+"tagline": "Mathematics, carefully written."
+```
+
+No LaTeX change is required.
+
+### Move a page between website sections
+
+Website categorisation is intentionally independent of the LaTeX book structure.
+For example, to move `Shuffling Cards` from **Summary Notes** to **Projects**,
+move its page object in `web/site-config.json` from the `notes.pages` array to
+the `projects.pages` array.
+
+You do **not** need to move the `.tex` file on disk.
+
+If you physically move a `.tex` file to another folder, update the corresponding
+`\subfile{...}` path in `Axiomathic.tex`; that affects LaTeX compilation, not
+the website category.
+
+### Add a new page
+
+1. Add its `\subfile{...}` line to `Axiomathic.tex`.
+2. Add a page entry to the appropriate `pages` array in `web/site-config.json`.
+3. Commit and push. GitHub Actions rebuilds the site.

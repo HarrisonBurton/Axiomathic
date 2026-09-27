@@ -1,0 +1,41 @@
+{
+  "siteTitle": "Axiomathic",
+  "tagline": "Mathematics, carefully written.",
+  "intro": "A growing collection of summary notes, mathematical explorations and longer-form projects, all written in LaTeX and published directly to the web.",
+  "sections": [
+    {
+      "id": "notes",
+      "label": "Summary Notes",
+      "description": "Compact write-ups and worked mathematical ideas.",
+      "pages": [
+        {
+          "file": "Shuffling-Cards.html",
+          "title": "Shuffling Cards",
+          "eyebrow": "NOTE",
+          "description": "Permutation groups, perfect shuffles and the mathematics of returning a deck to its original order."
+        }
+      ]
+    },
+    {
+      "id": "projects",
+      "label": "Projects",
+      "description": "Longer investigations and research-style write-ups.",
+      "pages": [
+        {
+          "file": "The-easier-Waring-problem.html",
+          "title": "The Easier Waring Problem",
+          "eyebrow": "PROJECT",
+          "description": "Density, local obstructions and conjectural structure in signed sums of powers."
+        }
+      ]
+    }
+  ],
+  "utilityPages": [
+    {
+      "file": "Theorem-Style-Guide.html",
+      "title": "Theorem Style Guide",
+      "label": "Style Guide"
+    }
+  ],
+  "about": "Axiomathic is built from a single LaTeX source: the same files generate the traditional PDF and this web edition. The visual layer is separate, so the mathematical source stays clean while the site can evolve independently."
+}

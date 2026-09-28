@@ -1,0 +1,19 @@
+% The sloped option gives rotated edge labels. Personally
+% I find sloped labels a bit difficult to read. Remove the sloped options
+% to get horizontal labels. 
+\begin{tikzpicture}[grow=left, sloped]
+\centering
+\node[bag] {$S$}
+    child {
+        node[bag] {$S+\delta S$}
+         edge from parent
+            node[above] {$\frac{1}{2}$}
+            node[below]  {}
+    }
+    child {
+        node[bag] {$S-\delta S$}
+         edge from parent
+            node[above] {$\frac{1}{2}$}
+            node[below]  {}
+    };
+\end{tikzpicture}

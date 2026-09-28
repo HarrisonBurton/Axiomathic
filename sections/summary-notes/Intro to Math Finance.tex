@@ -1,0 +1,293 @@
+\documentclass[../../Axiomathic.tex]{subfiles}
+
+\begin{document}
+
+% Keep a title page only when this chapter is compiled on its own.
+\ifSubfilesClassLoaded{%%
+  \title{Intro to Math Finance}
+  \author{Harrison J.P. Burton}
+  \date{\today}
+  \maketitle
+}{}
+
+\chapter{Introduction to Mathematical Finance}
+
+\section{Just enough mathematics}
+The key challenge with writing a book like this is balancing between a) the desire to lower the boundary for entry (i.e. trying to be self contained) and b) brevity (and avoiding a tedious experience for the average reader). This decision is complicated ever so slightly by the recognition that plenty of people don't necessarily have the time to really master foundational concepts before being rushed onto more advanced topics. Sure, plenty of individuals are able to ``plug the gaps'' retrospectively, but many don't. To assuage some of this risk, this brief chapter includes an overview of a handful of key concepts with a particular focus on building the intuition which can serve as a foundation for later. 
+\subsection{Probability and Statistics}
+Loosely speaking, \textit{probability} is a way to describe what can and can not happen in a relativistic sense; i.e. it describes not just the possible events but also how these compare to each other. For example, the probability $\left( \frac{1}{6} \right)$ than I rolle a 4 on a six sided fair dice tells us that a) this is an outcome that can happen and b) whilst it can happen, it it is five times more likely $\left( \frac{5}{6} \right)$ that something else happens instead. 
+\begin{nota}[Probability notation]
+Given a set of events $X$ and a relation $\sim$, we write $\mathbb{P}(X \sim x)$ to denote the probability that any event $x_i$ in the subset given by $\{x_i \in X \vert x_i \sim x\}$ occurs. For brevity, we right $\mathbb{P}(x)$ when the cardinality of subset is 1.
+\end{nota}
+The notion of events are commonly introduced with some physical experiment (e.g. the dice roll example above) to help build an intuition, but there is no reason why events have to be the results of an experiment. In fact, as the key parts are a) the set of events that can occur and b) some information as to how these occurences relate to each other, you can simply define them. The way this is typically thought about is in the measure theory sense which is:
+\begin{nota}[Sample space]
+We notate the set of possible events as $\mathcal{F}$. 
+\end{nota}
+\begin{defn}[Probability Measure]
+We call $\mathbb{P}$ a \textit{Probability Measure} if $\mathbb{P}$ returns results in the unit interval $[0,1]$ for all inputs and $\mathbb{P}$ satistfies countable additivity for all pairwise disjoint subsets of $\mathcal{F}$ - i.e. 
+\[\mathbb{P}\biggl( \bigcup_i E_i \biggr) = \sum_i \mathbb{P}(E_i)\] for all $E_i \in \mathcal{F}$.
+\end{defn}
+\begin{defn}[Random Variable]
+A random variable $X$ is a function which maps the set of events $\mathcal{F}$ to a \textit{measurable space}. This can be thought of as a realisation of an experiment. If $\mathbb{P}$ is considered a \textit{pushforward measure} of $X$, you get the the distribution of $X$ under $\mathbb{P}$.
+\end{defn}
+\marginpar{this bit needs rework}
+\paragraph{Common Distributions}
+Combining the above, the \textit{distribution} of a random variable describes the potential events relativistically as we need. Two important distributions are:
+\begin{itemize}
+\item The normal (or gaussian) distribution which has a commonly observed ``bell-shape'' curve.
+\item The lognormal distribution; if the logarithm of a random variable is normally distributed then we say that the random variable itself if lognormally distributed. 
+\end{itemize}
+\begin{nota}
+If a random variable $X$ is normally distributed with mean $\mu$ and standard deviation $\sigma$, we write $X \sim N(\mu,\sigma^2)$.\\
+\\
+If a random variable $X$ is lognormally distributed with mean $\mu$ and standard deviation $\sigma$, we write $X \sim Lognormal(\mu,\sigma^2)$.
+\end{nota}
+\paragraph{What are those parameters}
+Both of the above notations include the same parameters $\mu$ and $\sigma$; these aren't necessarily the only parameters needed to describe a random variable but they are very common because they tell us at a glance:
+\begin{itemize}
+\item $\mu$ indicates a locationary aspect; the mean is a type of average and so $\mu$ describes something like the centre of mass. 
+\item $\sigma$ indicates a dispersion aspect; the standard deviation tells us the spread and so $\sigma$ indicates how wide the data points might be. 
+\end{itemize}
+\begin{remark}
+Both of these parameters are actually worth thinking about more than you may think at first glance because both of these come up in slightly weird (and different) places in financial mathematics and a good intuition is helpful.
+\end{remark}
+
+\begin{defn}[Expected Value]
+Given a random variable $X$, we define the \textit{Expected Value} of $X$ (notated as $\mathbb{E}(X)$ as the probability weighted average of all outcomes. We calculate this as:
+\[\mathbb{E}(X) = \int x \mathbb{P}(x)\]
+Where (incredible loosely speaking) $\int$ represents a summation.
+\end{defn}
+The expected value is also the \textit{first moment} of a distribution and can be used interchangable with $\mu$ for the aforementioned distributions. 
+\begin{defn}[Variance and Standard Deviation]
+Given a random variable $X$, we define the \textit{Variance} of $X$ (notated as $\mathbb{V}ar(X)$) as the expected value of the squared distance from the mean. We calculate this as:
+\[\mathbb{V}ar(X)= \int (x-\mu)^2\mathbb{P}(x)= \int x^2\mathbb{P}(x)-\mu^2\]
+The standard deviation $\sigma$ satisfies $\sigma^2=\mathbb{V}ar(X)$.
+\end{defn}
+\begin{remark}
+Usually the standard deviation is defined as the square root of the variance but that is not a particularly intuitive way of viewing what is a very important parameter and so it's avoided here. What should be clear from the definition of variance above is that it a) is measuring around the mean and b) the square term means that points further away from the mean are penalised more; i.e. a dataset clustered around the mean will have a lower variance than one which has many points far away [as expected]. This idea is a \textit{central moment} and the variance is the second central moment {the first central moment is 0}. We'll breifly come back to central moments after concluding on standard deviation.
+\end{remark}
+\paragraph{So what is standard deviation?}
+Consider a geometric problem, given two points in the $xy$ plane, how far apart are they? This is fairly straight forward to answer via pythagoras:
+\begin{example}
+Given two points $A=(3,3)$ and $B=(6,7)$, the distance between these points is $\sqrt{(6-3)^2+(7-3)^2}=\sqrt{25}=5$.
+\end{example}
+Now consider, a slightly different question; ``If a person starts at point $A$ and walks to point $B$, how far in each direction have they walked on average?. On the face it, there might be different ways to answer this question. One answer may be that they walked 3 units right and 4 units up so on average this was 3.5 units in each direction. This is close, but gives a total distance walked of $\sqrt{3.5^2+3.5^2}=\sqrt{\frac{49\times 2}{4}}= \sqrt{24.5} \neq 5$. Obviously this can be solved algebraically, and we do that by dividing by $\sqrt 2$ in this instance to give an average of $\ 3.5355...$. 
+\[5=\sqrt{a^2+a^2}=\sqrt 2 \times \sqrt a^2 \implies a =\frac{5}{\sqrt 2} \equiv 3.5355...\]
+This generalises to higher dimensions, if we have two points in $n$ dimensional space:
+\[A =\begin{pmatrix} \mu \\ \mu \\ \vdots \\ \mu \end{pmatrix}, B=\begin{pmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \end{pmatrix} \]
+Then the distance between these two points is \[\sqrt{ \sum_{i=1}^{n}(x_i-\mu)^2} \] which means the average distance in each axis direction is \[ \frac{1}{\sqrt n} \times \sqrt{ \sum_{i=1}^{n}(x_i-\mu)^2}\]
+This last formula should be familiar as the standard deviation formula; essentially if we consider is our data set (i.e. event outcomes) as an $n$-dimensional point $B$, then we can interpret the standard deviation as the average distance each data point is from the mean which is hopefully a much more intuitive understanding of what the standard deviation is. 
+
+\section{Black-Scholes from Basics}
+The Black-Scholes formula and solution are - for many - the first foray into financial mathematics at a higher level than simple present value analysis. However, most illustrations seem to want the reader to have a large amount of assumed knowledge and, in my view, lack the fundamental intuition that should be built. The following pages are a crash course in the Black-Scholes model (BSM) that aim to remedy this, however-
+\begin{itemize}
+\item{This is not a rigourous derivation of the solution.}
+\item{Whilst most steps will be well reasoned, there may be the occassional slight of hand.}
+\item{There are some key assumptions (e.g. frictionless hedging) that will not be detailed here.}
+\end{itemize}
+\section{Thinking about stock dynamics}
+One of - if not the - first lesson people learn about money and finances is that things tend to get more expensive as time goes on. I suggest most people find this out from their parents long before they learn any other lesson about how money behaves. This is not an economics book and so we are not going to go into the drivers of why the buying power of money decreases over time, but it is important to recognise that it typically does. Why is it important? Well, when you consider a unit of stock - say 1 share of Company XYZ - the \textit{price} of that stock is what a market participant will pay. If the buying power of money decreases over time, it may be reasonable to suppose that price of that stock will need to increase over time to account for this. \\
+\\
+Next, we think about these increases; what should they look like? Again, something most people encounter from a young age is relative change, e.g. we tend to think about $x\%$ increase in house prices (relative) rather than an actual monetary figure (absolute). This means that we may expect that prices a) grow over time and b) that growth at a given time is proportional to the price at that time. This pretty much gives you the idea that a crude baseline would be some exponetial curve like $S_0 \times e^{r \times t}$ where $S_0$ is the stock price now, $t$ represents time and $r$ is some growth rate. This looks like this:
+\begin{figure}
+\centering
+\includegraphics[width=.75\textwidth]{Financial Mathematics/GBM_Vol0.png}
+\caption{Exponential growth}
+\end{figure}
+\marginpar{this needs to be fixed so that it's not the centre page, just centre aligned}
+However, that is just a rough shape. It has a couple of properties that we like -
+\begin{itemize}
+\item{By definition it satisfies our loose ideas on what a stock price should be doing over time}
+\item{It is mathematically convenient because of the properties of $e$; particularly, it is easy to express compounded returns: \[S_{2t}=S_t\times e^{r_2(2t-t)}=S_0 \times e^{r_1t}\times e^{r_2(2t-t)}=S_0 \times e^{(r_2+r_1)t}\] Where $r_1$ and $r_2$ are the respective growth periods between now and time $t_1$ and between $t_1$ and $t_2$.}
+\end{itemize}
+However, whilst there are some positives to this model, it is clearly missing something; stock prices do not, have not and will not follow a smooth, monotically increasing trend. If they did, the world would be a much more predicatable place. To fix this, we need to ``add'' something to our model to capture the randomness of stock moves. There isn't necessarily a ``right way'' to do this, so a good place to start is with the basics and see where we end up. What should the randomness look like:
+\begin{itemize}
+\item{Stock prices should be able to down as well as up.}
+\item{Our stock price model is dependent on a time parameter $t$, the random moves should also factor in some scaling dependent on the $t$ (i.e. the longer the period we're modelling, the bigger the random move should be).}
+\item{Some stocks be more susceptible to bigger random moves (e.g. risky and high growth companies) and others may be more stable (e.g. conservative and established companies).}
+\end{itemize}
+We can accomplish all three by including an additional term in our return; rather than having \[S_t=S_0\times e^{r \times t}\] we model our stock prices as: \[S_t=S_0\times e^{r \times t} \times e^{N(0,\sigma^2 t)}\] 
+Here $N(0,x)$ denotes a random variable distributed normally with mean 0 and variance $x$. We have introduced a new paramater $\sigma$ which we call the \textit{volatility} of the stock price and we have done this to give us the flexibility desired in point three above. Have we answered all of our basic requirements?
+\begin{itemize}
+\item{The stock price can now go down as well as up provided the random variable is suitably negative.}
+\item{The variance of the random variable is dependent on $t$ and so the random moves are scaled with time.}
+\item{The volatility parameter allows us to tweak the size of the random moves without impacting anything else; the impact of the volatility parameter is illustrated below.}
+\end{itemize}
+\begin{figure}
+\centering
+\begin{minipage}{0.45\textwidth}
+        \centering
+	\includegraphics[width=1\textwidth]{Financial Mathematics/GBM_Vol20.png}
+	\caption{Exponential growth with small spikes}
+    \end{minipage}\hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{Financial Mathematics/GBM_Vol50.png}
+	\caption{Exponential growth with larger spikes}
+    \end{minipage}
+\end{figure}
+Whilst we have kept things fairly simple, we are nearly at the finished model. We need one final gut check to make sure our stock prices are going to behave as we want them and that is ``what is the expected value?''. This is where we point to our risk-neutral valuation approach; if we are not being compensated for the additional risk from the stock then we would expect our returns after a period of time $t$ to match that of the returns in a risk free savings account which is $e^{rt}$\footnote{Clearly, $r$ is the continuously compounded risk-free rate}. With this mindset, we actually recover our inital naive model (as in both cases growth is proportional to amount) - has our additional random turn left this unaffected? Unfortunately not. We have \[S_t=S_0\times e^{r \times t} \times e^{N(0,\sigma^2 t)} \implies \frac{S_t}{S_0} \times e^{r \times t} \times e^{\sigma \sqrt t N(0,1)}\]. This means that our returns are lognormally normally distributed with mean $rt$ and variance $\sigma^2t$ and that means that the expected value is $e^{rt+\frac{\sigma^2t}{2}}$. Which is close but needs a correction\footnote{This comes from the difference between the mean the median in the lognormal distribution}. There's a very obvious correction we can make to fix our expectation and that is to include a $\frac{\sigma^2t}{2}$ as part of the our growth rate to arrive at the following model: \[S_t=S_0\times e^{(r-\frac{\sigma^2}{2}) \times t} \times e^{\sigma \sqrt t N(0,1)} \] This is referred to as risk-neutral geometric brownian motion.
+\section{Solution to Black-Scholes}
+The Black-Scholes equation is a \textit{partial differential equation} (PDE) which describes the risk-neutral price of an option contract. Fischer Black and Myron Scholes (and Robert Merton) gave a closed form solution. We will derive later in this chapter but realistically all it does is provide a technical description of the problem at hand; how do we price an option?
+\begin{defn}[European Call Option]
+A \textit{European Call Option} gives the holder the right - but not the obligation - to purchase the underlying asset as a fixed strike price ($K$) and at an agreed time in the future $t$. A put option is structured similarly but the holder can sell instead of buy the option. 
+\end{defn}
+The value of a call option is a function of several parameters:
+\begin{itemize}
+\item{Spot price - $S$; the prevailing market price should factor into my decision making process when I consider entering into the call option.}
+\item{Strike price - $K$; I would like the strike price to be as low as possible as it is the amount of money I will hand over if I exercise my option.}
+\item{Time to expirary - $t$; as the option is giving me a right but not an obligation, it's gives me protection. The longer I look into the future, the more uncertain things are and the more I value that protection.}
+\item{Volatility - $\sigma$; again, the option is giving me protection and so the more volatile the underlying asset is, the more I value the protection (i.e. you'll won't end up holding any stock if it crashes as you simply won't exercise the option.}
+\item{Risk-free rate - $r$; we will have cash flows at different points in time and so will need to \textit{present value} them using a risk-free rate.}
+\end{itemize}
+Because of this, we write the value of the option as $V(S,K,\sigma,r,t)$ or an abbreviation as suitable (e.g. $V$ or $V(K,t)$ if the underlying asset is already described). 
+Our job is the find the value of $V$ given the five inputs and this is very achievable. 
+\paragraph{Step One - A bad first attempt}
+If we assume that the underlying asset is a follows geometric brownian motion, then the expected price at maturity is \[S_t=S\times e^{rt} \] which means we expect the following (discounted) profit: \[e^{-rt} \times \left(  S_t-K \right) =S -\left (K\times e^{-rt} \right )\]
+What's wrong with this? Well the main issue is that we have assumed that we are always exercising the option when in practice we are only going to exercise it if $S_t \geq K$. 
+\paragraph{Step Two - a better second attempt}
+Let's try and factor in the probability that the asset price is above the strike price at maturity, i.e .$\mathbb{P}(S_t>K)$. We can do this this as:
+\[S_t>K \implies S \times e^{(r-\frac{\sigma^2}{2}) \times t} \times e^{\sigma \sqrt t N(0,1)>K} \implies \]
+\[e^{(r-\frac{\sigma^2}{2}) \times t} \times e^{\sigma \sqrt t N(0,1)} > \frac{K}{S}\implies \]
+\[(r-\frac{\sigma^2}{2}) \times \sigma \sqrt t N(0,1) > \ln{\frac{K}{S}} \implies \]
+\[ \sigma \sqrt t N(0,1) > \ln{\frac{K}{S}}-(r-\frac{\sigma^2}{2}) \implies \]
+\[ N(0,1) > \frac{\ln{\frac{K}{S}}-(r-\frac{\sigma^2}{2})}{\sigma \sqrt t } \implies \]
+\[\mathbb{P}(S_t>K) \implies \mathbb{P}(N(0,1) > \frac{\ln{\frac{K}{S}}-(r-\frac{\sigma^2}{2})}{\sigma \sqrt t })\implies \]
+\[ \mathbb{P}(N(0,1) <- \frac{\ln{\frac{K}{S}}-(r-\frac{\sigma^2}{2})}{\sigma \sqrt t }) \implies \mathbb{P}(N(0,1) < \frac{\ln{\frac{S}{K}}+(r-\frac{\sigma^2}{2})}{\sigma \sqrt t }) \]
+This solution to the final part is simply $\mathcal{N}(d)$ where $\mathcal{N}$ is the cdf of the standard normal distribution and $d$ is $\frac{\ln{\frac{S}{K}}+(r-\frac{\sigma^2}{2})}{\sigma \sqrt t }$. This gives us a slightly better approach to the option value as at least now we are factoring the probability of exercise:
+\[V = \mathcal{N}(d)\times S -\left (\mathcal{N}(d) \times K\times e^{-rt} \right )\]
+
+Is this the answer? If you have cheated and looked up the answer you might think so but there is still an issue here but it is fairly nuanced. We need to reflect the information of $S_t>K$ into our expectation of $S_t$ - i.e. $\mathbb{E}(S_t)$ is no longer $S \times e^{rt}$; it will be higher than that as we exclude all the cases on the low-end of the spectrum (where $S_t <K$). 
+\paragraph{Step three - applying the finishing touches}
+To finish this off, we need to recall a fact from probability theory which is about conditional probability. 
+\begin{nota}[Conditional Probability]
+Given two events $A$ and $B$, we write the conditional probability of $B$ occuring given $A$ as: \[\mathbb{P}(B \vert A)=\frac{\mathbb{P}(A \cap B)}{\mathbb{P}(A)}\]
+\end{nota}
+\begin{example}
+I roll a fair dice, what is the probability that the outcome is a 2 given that I roll an even number:
+\[\mathbb{P}(2 \vert even)=\frac{\frac{1}{6}}{\frac{1}{2}}=\frac{2}{6}=\frac{1}{3}\]
+\end{example}
+The key takeaway from this example is that the information included ``is even'' has a direct impact on probability of the outcome. Furthermore, as it impacts the probability of the outcome, it impacts the expected value: 
+\begin{example}
+Suppose X is a random variable which mimics the roll of a fair six sided dice. The expected value of X is: \[\mathbb{P}(X)\frac{1+2+3+4+5+6}{6} = 3.5\] but the conditional expected value of X given the roll is even is: \[\mathbb{P}(X \vert even) = \frac{2+4+6}{3}=4 = \frac{\frac{1}{6}\times (2+4+6)}{\frac{1}{2}}\]
+\end{example}
+The last equivalence has been included to really show what is going on here; you have your outcomes (2,4, and 6) and you estimate the expected value by multiplying by their fair probability ($\frac{1}{6}$). You then factor in the additional information that you know the roll is even (by dividing by $\frac{1}{2}$. Taking this back to our stock model, we are currently at the point when we need to work out the conditional expectation given the asset price is above the strike, i.e. \[\mathbb{E}(S_t \vert S_t>K)\]. 
+We note the following:
+\begin{itemize}
+\item{We already have the probability that $S_t>K$, we worked that out to be $\mathcal{N}(d)$.}
+\item{In the stock case, the returns are described by random variable is distributed lognormally with mean $(r-\frac{\sigma^2}{2})t$ and variance $\sigma^2t$ and so the \textit{probability density function} is \[\frac{1}{x \sigma \sqrt{2\pi t}}e^{-\frac{1}{2}\biggl (\frac{\ln x - ((r-\frac{\sigma^2}{2})t}{\sigma\sqrt t}\biggr)^2} \]}
+\item{Putting these two together with how we calculate the expectation of a continuous random variable, we need to solve the following integral:
+\[\int_{\frac{K}{S}}^\infty x \times \frac{1}{x \sigma \sqrt{2\pi t}}e^{-\frac{1}{2}\biggl (\frac{\ln x - ((r-\frac{\sigma^2}{2})t}{\sigma^2\sqrt t}\biggr)^2} \times \frac{1}{\mathcal{N}(d)} dx \]}
+\end{itemize}
+Whilst this looks nasty, we can solve it via substitution. Consider $y = \biggl (\frac{\ln x - ((r-\frac{\sigma^2}{2})t}{\sigma\sqrt t}\biggr)$ then we have:
+\[\frac{dy}{dx}=\frac{1}{x\sigma\sqrt t}, dy= \frac{1}{x\sigma \sqrt t}dx\]
+This reduces our integral to:
+\[\int_{\biggl (\frac{\ln \frac{K}{S} - ((r-\frac{\sigma^2}{2})t}{\sigma\sqrt t}\biggr)}^\infty x \times\frac{1}{\sqrt{2\pi}} e^{-\frac{1}{2}y^2} \frac{1}{\mathcal{N}(d)} dy \]
+The lower limit of this integral is $-d$ and we can pull out the probability to tidy this up: 
+\[\frac{1}{\mathcal{N}(d)} \int_{-d}^\infty x \times \frac{1}{\sqrt{2\pi}} e^{-\frac{1}{2}y^2}\]
+There is still one $x$ term (that didn't cancel), and we use:
+\[y = \biggl (\frac{\ln x - ((r-\frac{\sigma^2}{2})t}{\sigma\sqrt t}\biggr) \implies x = e^{y \sigma \sqrt{t}} \times e^{(r-\frac{\sigma^2}{2})t} \]
+To reduce our integral to: 
+\[\frac{1}{\mathcal{N}(d)} \int_{-d}^\infty e^{y \sigma \sqrt{t}} \times e^{(r-\frac{\sigma^2}{2})t} \times \frac{1}{\sqrt{2\pi}} e^{-\frac{1}{2}y^2} \implies\]
+\[\frac{1}{\mathcal{N}(d)} \int_{-d}^\infty  \frac{1}{\sqrt{2\pi}} e^{y \sigma \sqrt{t}+(r-\frac{\sigma^2}{2})t +-\frac{1}{2}y^2} \implies\]
+\[\frac{1}{\mathcal{N}(d)} \int_{-d}^\infty  \frac{1}{\sqrt{2\pi}} e^{-\frac{1}{2}\bigl ( -2y \sigma \sqrt{t}+-2(r-\frac{\sigma^2}{2})t +y^2 \bigr )} \implies\]
+\[\frac{1}{\mathcal{N}(d)} \int_{-d}^\infty  \frac{1}{\sqrt{2\pi}} e^{-\frac{1}{2}\bigl (y^2  -2y \sigma \sqrt{t}+\sigma^2t-2rt \bigr )} \implies\]
+\[\frac{1}{\mathcal{N}(d)} \int_{-d}^\infty  \frac{1}{\sqrt{2\pi}} e^{-\frac{1}{2}\bigl (y^2  -2y \sigma \sqrt{t}+\sigma^2t \bigr )} \times e^{rt}\implies\]
+\[\frac{1}{\mathcal{N}(d)}\times e^{rt} \int_{-d}^\infty  \frac{1}{\sqrt{2\pi}} e^{-\frac{1}{2}\bigl (y^2  - \sigma \sqrt{t} \bigr )^2} \]
+The integral is now int the form of the PDF of a normal distribution, specifically a random variable (say $Y$) which is distributed $Y \sim N(\sigma \sqrt t,1)$ which means we can interpret the integral as:
+\[\mathbb{P}({-d} < Y<\infty)\]
+Which is easy to translate to the standard normal via:
+\[\mathbb{P}({-d} < Y<\infty)) \implies \mathbb{P}({-d}-\sigma \sqrt t < N(0,1) <\infty)) \implies \]
+\[\mathbb{P}({-d}-\sigma \sqrt t < N(0,1)) \implies \mathbb{P}(N(0,1) <-({-d}-\sigma \sqrt t) ) \implies \mathbb{P}(N(0,1) <(d+\sigma \sqrt t) ) =\mathcal{N}(d_\sigma \sqrt t)  \]
+This means that the expected return, conditionally on the option expiring in the money, is $e^{rt} \times \frac{\mathcal{N}(d_\sigma \sqrt t)}{\mathcal{N}(d)}$. Putting this all together, we find the (discounted) value of the option should be: 
+\[e^{-rt} \times \mathcal{N}(d) \times \biggl (S \times e^{rt}  \times \frac{\mathcal{N}(d\sigma \sqrt t)}{\mathcal{N}(d)} - K \biggr ) =  S\mathcal{N}(d+\sigma \sqrt t) - e^{-rt}K\mathcal{N}(d)\]
+Convention dictates that $d$ is denoted as $d_2$ and $d+\sigma \sqrt t = d_1$ for  $S\mathcal{N}(d_1) - e^{-rt}K\mathcal{N}(d_2)$.
+\section{Handwaving our way to the Black-Scholes Partial Differential Equation}
+So far, there has been \textit{some} ``handwaving'' to get us to the BSM price for a call option but hopefully I have delivered on the aim of having well-motivated hand waves. We are going to stretch this even further now so that we can actually derive the ``Black-Scholes Partial Differential Equation''. You may wonder what we are going to differently considering we have just showed a formula which gives you the option price. Well, that formula is the solution to the BSM equation and in fact we have kind of put the cart before the horse here\footnote{This is completely deliberate as I consider it better from a pedagological stand point to put the concrete answer before the abstract derivation}. Fischer Black and Myron Scholes key breakthrough was proving that, if an underlying asset behaved in line with certain assumptions, then the value of an option on that option satisfied a neat, partial differential equation that had a closed form solution. Solving the PDE actually follows standard approaches\footnote{Not included here but you can transform the equation into the heat equation through a change of variables and solve subject to boundary conditions}. We have already met the solution and so this section is dedicated to a) deriving the equation and b) checking that our solution is in fact a solution of the PDE>
+\subsection{Approximations}
+As noted above, we are going to rely on some handwaving throughout the remaining of this section. The bulk of these rely on a familiarity of approximations and their limits. These can all be made rigourous if you so wish, but for our purposes it's important that we can trust any shortcuts that we take. A couple of examples that we will meet:
+\begin{example}[Taylor Series to indicate a differential]
+Given a function $f(x)$, recall the Taylor Series expansion of $f$ at a point $a$ is:
+\[f(x)\vert_a = f(a)+f'(a)(x-a)+\frac{f''(a)(x-a)^2}{2!}+\frac{f'''(a)(x-a)^3}{3!}+\dots\]
+Suppose we consider the slightly nudged function $f(x+\delta x)$ and we expand this at a variable point $x$, what does that look like?
+\[f(x+\delta x)=f(x)+f'(x)(x+\delta x -x)+\frac{f''(x)(x+\delta x -x)^2}{2!}+\frac{f'''(x)(x+\delta x -x)^3}{3!}+\dots=\]
+\[f(x+\delta x)=f(x)+f'(x)\delta x +\frac{f''(x)\delta x^2}{2!}+\frac{f'''(x)\delta x^3}{3!}+\dots\]
+This can be rearranged as:
+\[\frac{f(x+\delta x)-f(x)}{\delta x}=f'(x) +\frac{f''(x)\delta x}{2!}+\frac{f'''(x)\delta x^2}{3!}+\dots\]
+If you now take the limit as $\delta x$ tends to 0, you have an illustration of the definition of a derivative - i.e.:
+\[\lim_{\delta x \to 0} \frac{f(x+\delta x)-f(x)}{\delta x}=f'(x)\]
+Where we have assumed that the powers of $\delta x$ on the right hand side mean that those terms vanish in the limit.
+\end{example}
+Clearly we need the derivative of $f$ to exist for the Taylor Series expansion to make any sense, but the reason we have illustrated it as above is for two reasons:
+\begin{itemize}
+\item{If we replace our function $f$ with $y$, we have the familiar $\frac{dy}{dx}=f'(x)$ which is readily rearranged to give $df=dy=f'(x)dx$.\footnote{In our loose world, it suffices to think of the derivative as a quotient of small changes}}
+\item{There is additional transparency in this derivation that $df=dy=f'(x)dx$ only holds if we are sure that the higher order terms are vanishingly small. This is important for functions of more than one variable.}
+\end{itemize}
+
+\begin{example}[Taylor Series to indicate a differential for a function of two variables]
+Given a function of two variables $f(x,y)$, the Taylor Series expansion is:
+\[f(x,y)\vert_{(a,b)}= f(a,b)+f_x'(a,b)(x-a)+f_y'(a,b)(y-b)+\frac{f_x''(a,b)(x-a)^2}{2!}+\]
+\[+\frac{f_y''(a,b)(y-b)^2}{2!}+\frac{f_{xy}''(a,b)(x-a)(y-b)}{2!}+\dots\]
+Where we use the notation that the primes dictate the order of the partial derivative ($f''$ represents a second derivative) and the subscripts denote the variable that the derivative is taken to (e.g. $f_x'$ is the first derivative with respect to $x$, also written $\pdv{f}{x}$).
+Following a similar rationale as above, we find:
+\[df = f_x'(x,y)\delta x+f_y'(x,y)\delta y+\frac{f_x''(x,y)\delta x^2}{2!}+\frac{f_y''(x,y)\delta y^2}{2!}+\frac{f_{xy}''(x,y)\delta x\delta y}{2!}+\dots\]
+\end{example}
+If we have that $O(\delta x)\sim O(\delta y)$\footnote{This is ``big-O'' notation which means these two quantities are the same order e.g. they grow and shrink at the same rate.} then we can take the limit as both tend to 0. But do we think this is going to be the case in our purposes?
+\subsection{Revisting our stock model}
+\paragraph{Implicit risk-neutrality}
+Cutting to the chase, our stock model is a function for the return on a stock and this is a function of two inputs $S$, the stock price today and $t$ time we are holding for. If we consider a very short time increment ($\delta t$), we can calculate $\delta S$ as follows:
+\[ \delta S = S_{\delta t}-S = Se^{(r-\frac{\sigma^2}{2}})t + \sigma \sqrt t N(0,1) - S = S\biggl (e^{(r-\frac{\sigma^2}{2}})t + \sigma \sqrt{\delta t} N(0,1) - 1 \biggr) \] 
+As $\delta t$ tends to 0, the exponent is small and so we use the approximation $e^x = 1+x$ for small $x$ to find:
+\[ \delta S = S\biggl (1+{(r-\frac{\sigma^2}{2}})t + \sigma \sqrt{\delta t} N(0,1) - 1 \biggr) \] 
+But $\delta t$ and $\sqrt{\delta t}$ are not the same order; they grow at different rates. As we're taking the limit as $\delta t$ tends to 0, we find that $\delta t$ vanishes before $\sqrt{\delta t}$, giving:
+\[ \delta S = S\biggl ( \sigma \sqrt{\delta t} N(0,1) \biggr) \] 
+The $N(0,1)$ is just a constant which is a linear scaling factor and so we reach a conclusion: 
+\[O(\delta S) \sim \O(S \sigma \sqrt{\delta t})\] or equivalently
+\[O(\delta S^2) \sim \O(S^2 \sigma^2\delta t) \]
+I've named this approach \textit{implicit risk neutrality} because it comes from the stock model which we built to be risk-neutral. There is a more ``from basics'' version which is:
+\paragraph{Explicity risk-neutrality}
+We consider a simple stock model; we observe the stock price at discrete time incremements $t$, $t+\delta t$, $t+2\delta t$, $\dots$ and the stock will either increase or decrease by some uncertain amount at each time step. For now, we don't know the probability of the increases or decreases so we denote these as $p$ and $(1-p)$. We illustrate this as:\\
+\input{Financial Mathematics/Binomial_Tree_1.tex}
+\\
+Whilst we don't know the actual probabilities of the up and down move, to a certain extent we don't care. We are pricing in a risk neutral world and - as explained above - one way to think about risk neutral pricing is to recognise that the outcome determines the probability rather than the other way round (i.e. rather than expecting a large payoff for something unlikely which would be expecting compensation for risk you work backwards from the outcomes. This is akin to how bookmakers run a book). In the example above, the payoff is symmetric which means that $P=1-P=\frac{1}{2}$. \\
+We could have chosen diferent stocks moves, but then we would just have to adjust the probabilities accordingly; we have chosen the symmetric outcomes for simplicity. \\
+Now, consider a fairly natural question; what are the chances that my stock price is $S$ at time $t + \delta t$. Let's denote this probability as $P(S,t + \delta t)$. What are our requirements? Well for us to be at $S$ at time $t + \delta t$, we need either:
+\begin{itemize}
+\item{To be at $S-\delta S$ at time $t$ and move up.}
+\item{To be at $S+\delta S$ at time $t$ and move down.}
+\end{itemize}
+
+Which we illustrate as:
+\\
+\\
+\input{Financial Mathematics/Binomial_Tree_2.tex}
+\\
+\\
+But this essentially gives us a bit of recursion, because we then need to know the chances that we are at $S+\delta S$ at time $t = P(S + \delta S, t)$ and the $P(S-\delta S, t)$. We could regress the whole tree back but we don't need to for the point that we are illustrating. Formulate the above as an equation:
+\[P(S,t + \delta t) = \frac{1}{2}\biggl ( P(S + \delta S, t) + P(S - \delta S, t) \biggr ) \]
+We can now refer to our Taylor expansion of a function of two variables to approximate $P$ at $(S, t+\delta t)$ which gives:
+ \[ P(S + \delta S, t) = P(S, t + \delta t) + \pdv{P}{S}\delta S + \pdv{P}{t}\delta t +\frac{1}{2}\pdv{^2P}{S^2}\delta S^2+\frac{1}{2}\pdv{^2P}{t^2}\delta t^2+\frac{1}{2}\pdv{P}{S,t}\delta S \delta t \]
+ And,
+ \[ P(S - \delta S, t) = P(S, t + \delta t) - \pdv{P}{S}\delta S + \pdv{P}{t}\delta t +\frac{1}{2}\pdv{^2P}{S^2}\delta S^2+\frac{1}{2}\pdv{^2P}{t^2}\delta t^2-\frac{1}{2}\pdv{P}{S,t}\delta S \delta t \]
+ Combining these, we have:
+ \[P(S,t + \delta t) = \frac{1}{2}\biggl ( 2P(S, t + \delta t) +2\pdv{P}{t}\delta t + 2\frac{1}{2}\pdv{^2P}{S^2}\delta S^2+2\frac{1}{2}\pdv{^2P}{t^2}\delta t^2 \biggr ) \]
+ Which we can simplify to:
+ \[0=\pdv{P}{t}\delta t + \frac{1}{2}\pdv{^2P}{S^2}\delta S^2+\frac{1}{2}\pdv{^2P}{t^2}\delta t^2 \]
+Rearranging, we have:
+\[-\frac{1}{2}\pdv{^2P}{S^2}\delta S^2 = \pdv{P}{t}\delta t +\frac{1}{2}\pdv{^2P}{t^2}\delta t^2 =\delta t \biggl ( \pdv{P}{t}+\frac{1}{2}\pdv{^2P}{t^2}\delta t \biggr) \implies\]
+\[-\frac{1}{2}\pdv{^2P}{S^2}\frac{\delta S^2}{\delta t}=\biggl ( \pdv{P}{t}+\frac{1}{2}\pdv{^2P}{t^2}\delta t \biggr) \]
+This gives us a PDE for our probability function $P$; notice how the left hand side includes a $\frac{\delta S^2}{\delta t}$ term? We have three cases:
+\begin{itemize}
+\item{ $O(\delta S^2) > O(\delta t)$ which means the left hand side blows up to infinity and we can't solve the PDE}
+\item{$O(\delta S^2) < O(\delta t)$ which means that the left hand side collapses to 0; we may be able to solve the PDE but the solution won't make sense (it won't involve $S$)}
+\item{$O(\delta S^2)\sim O(\delta t)$ which means that a solution may exist (we would still need to solve it!).}
+\end{itemize}
+As such, we actually need $O(\delta S^2) \sim O(\delta t)$. In fact, this is actually why we specify the random jumps to be drawn from a $N(0,\sigma^2t)$ and not $N(0,\sigma^2t^2)$ distribution in our model. 
+\subsection{Covering your back - hedging your options}
+
+
+
+			
+
+  
+\end{document}

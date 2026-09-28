@@ -943,3 +943,107 @@ img.ax-brand-logo,
 }
 body.ax-dark .ax-utility-card { background: #182431; }
 body.ax-dark .ax-utility-card strong { color: #f0f4f8; }
+
+/* =========================================================
+   Axiomathic v5: robust desktop gutters + image-rich pages
+   ========================================================= */
+:root {
+  --left-gap: 32px;
+}
+
+/* Reserve a real gutter beyond the fixed rail.  !important is deliberate:
+   lwarp's generated layout rules vary slightly between TeX Live versions. */
+body:not(.ax-home):not(.ax-no-left-rail) .bodycontainer {
+  margin-left: calc(var(--left-w) + var(--left-gap)) !important;
+  margin-right: var(--right-w) !important;
+  width: min(var(--content-w), calc(100vw - var(--left-w) - var(--left-gap) - var(--right-w))) !important;
+  max-width: var(--content-w) !important;
+}
+
+/* Once the viewport is too tight for a comfortable fixed rail, remove the
+   rail rather than allowing it to crowd or cover the reading column. */
+@media (max-width: 1180px) {
+  :root { --left-w: 0px; --left-gap: 0px; }
+  .sidetoccontainer { display: none !important; }
+  body:not(.ax-home) .bodycontainer {
+    width: min(860px, 100%) !important;
+    max-width: 860px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 1.6rem;
+    padding-right: 1.6rem;
+  }
+}
+
+/* Article figures: responsive, calm, and independent of print geometry. */
+section.textbody figure {
+  margin: 1.8rem auto 2.1rem;
+  max-width: 100%;
+  text-align: center;
+}
+section.textbody figure img,
+section.textbody .figure img {
+  display: block;
+  width: auto;
+  max-width: 100% !important;
+  max-height: 78vh;
+  height: auto !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 6px;
+  background: transparent !important;
+  box-shadow: 0 4px 18px rgba(15,35,60,.10) !important;
+  object-fit: contain;
+}
+section.textbody figcaption,
+section.textbody .figure .caption {
+  max-width: 720px;
+  margin: .6rem auto 0;
+  color: var(--muted);
+  font: 12.5px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* Never let article image rules leak into the header brand. */
+.ax-header img.ax-brand-logo {
+  max-height: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* =========================================================
+   Axiomathic v5.1: image-rich Playing Cards pages
+   ========================================================= */
+
+/* lwarp retains minipages as inline blocks. Keep paired deck images together
+   without carrying A5 print dimensions into the web layout. */
+section.textbody .minipage {
+  box-sizing: border-box;
+  vertical-align: top;
+  max-width: 100%;
+}
+
+/* Two-up/four-up groups should stay readable on desktop and collapse on small
+   screens. The explicit LaTeX widths are respected where possible. */
+section.textbody figure .minipage img {
+  max-height: 62vh;
+}
+
+@media (max-width: 720px) {
+  section.textbody figure .minipage {
+    width: 100% !important;
+    display: block !important;
+    margin: 0 auto 1rem !important;
+  }
+  section.textbody figure .minipage img {
+    max-height: 70vh;
+  }
+}
+
+/* Rotated / near-full-page print artwork becomes a normal responsive web image.
+   lwarp may emit inline transform/size information; keep it within the article. */
+section.textbody figure img[style*="rotate"],
+section.textbody figure img[style*="transform"] {
+  max-width: min(100%, 720px) !important;
+  max-height: 78vh !important;
+}

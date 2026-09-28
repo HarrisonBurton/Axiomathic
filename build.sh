@@ -45,13 +45,22 @@ done
 cp site.css web/theme.js "${PROJECT}.pdf" site/
 
 # Conventional asset folders are copied verbatim when present.
-for d in assets figures images; do
+for d in assets figures images media; do
   if [[ -d "$d" ]]; then
     cp -R "$d" site/
   fi
 done
 if [[ -d lateximages ]]; then
   cp -R lateximages site/
+fi
+
+# Article-specific media may live beside a subfile. Copy only media folders,
+# preserving their paths, rather than publishing the LaTeX sources themselves.
+if [[ -d sections ]]; then
+  while IFS= read -r -d '' f; do
+    mkdir -p "site/$(dirname "$f")"
+    cp "$f" "site/$f"
+  done < <(find sections -type f \( -path '*/images/*' -o -path '*/figures/*' -o -path '*/media/*' \) -print0)
 fi
 
 touch site/.nojekyll

@@ -25,9 +25,16 @@ def chapter_title(text, fallback):
 def first_paragraph(text):
     m=re.search(r'\\chapter(?:\[[^\]]*\])?\{[^{}]+\}',text,re.S)
     body=text[m.end():] if m else text
-    # Stop before first section or environment; take the first prose paragraph.
-    body=re.split(r'\\section\b|\\begin\{|\\subsection\b',body,maxsplit=1)[0]
-    paras=[strip_tex(p) for p in re.split(r'\n\s*\n',body) if strip_tex(p)]
+    # Prefer prose before the first section.  If the chapter opens immediately
+    # with a section heading, look just after that heading instead.
+    leading=re.split(r'\\section\b|\\begin\{|\\subsection\b',body,maxsplit=1)[0]
+    paras=[strip_tex(p) for p in re.split(r'\n\s*\n',leading) if strip_tex(p)]
+    if not paras:
+        sec=re.search(r'\\section(?:\[[^\]]*\])?\{[^{}]+\}',body,re.S)
+        if sec:
+            after=body[sec.end():]
+            after=re.split(r'\\subsection\b|\\section\b|\\begin\{',after,maxsplit=1)[0]
+            paras=[strip_tex(p) for p in re.split(r'\n\s*\n',after) if strip_tex(p)]
     if not paras: return ''
     p=paras[0]
     return p[:220].rstrip()+('…' if len(p)>220 else '')

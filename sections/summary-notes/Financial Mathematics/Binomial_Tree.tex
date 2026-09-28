@@ -1,0 +1,66 @@
+% The sloped option gives rotated edge labels. Personally
+% I find sloped labels a bit difficult to read. Remove the sloped options
+% to get horizontal labels. 
+\begin{tikzpicture}[grow=right, sloped]
+\node[bag] {Label 1}
+    child {
+        node[bag] {Bottom Bag}        
+            child {
+                node[end, label=right:
+                    {Label Node 3 - Bottom}] {}
+                edge from parent
+                node[above] {Label to Node 3 - Bottom}
+                node[below]  {Label to Node 3 - Top}
+            }
+            child {
+                node[end, label=right:
+                    {Label Node 4 - Top}] {}
+                edge from parent
+                node[above] {$B$}
+                node[below]  {$\frac{5}{9}$}
+            }
+            edge from parent 
+            node[above] {$W$}
+            node[below]  {$\frac{4}{7}$}
+    }
+    child {
+        node[bag] {Middle Bag}        
+        child {
+                node[end, label=right:
+                    {$P(B_1\cap W_2)=\frac{3}{7}\cdot\frac{3}{9}$}] {}
+                edge from parent
+                node[above] {$B$}
+                node[below]  {$\frac{3}{9}$}
+            }
+            child {
+                node[end, label=right:
+                    {$P(B_1\cap B_2)=\frac{3}{7}\cdot\frac{6}{9}$}] {}
+                edge from parent
+                node[above] {$W$}
+                node[below]  {$\frac{6}{9}$}
+            }
+        edge from parent         
+            node[above] {$B$}
+            node[below]  {$\frac{3}{7}$}
+    }
+     child {
+        node[bag] {Top Bag}        
+        child {
+                node[end, label=right:
+                    {$P(B_1\cap W_2)=\frac{3}{7}\cdot\frac{3}{9}$}] {}
+                edge from parent
+                node[above] {$B$}
+                node[below]  {$\frac{3}{9}$}
+            }
+            child {
+                node[end, label=right:
+                    {$P(B_1\cap B_2)=\frac{3}{7}\cdot\frac{6}{9}$}] {}
+                edge from parent
+                node[above] {$W$}
+                node[below]  {$\frac{6}{9}$}
+            }
+        edge from parent         
+            node[above] {$B$}
+            node[below]  {$\frac{3}{7}$}
+    };
+\end{tikzpicture}

@@ -62,6 +62,72 @@ def add_type_classes(text: str) -> str:
 
     return text
 
+
+
+def renumber_page_locally(text: str) -> str:
+    """Make each generated chapter-page read as an independent publication.
+
+    lwarp numbers headings/theorems using the master book chapter number.  For
+    the web edition we remap the leading chapter component to 1 on each page,
+    while leaving the PDF/master counters untouched.
+    """
+    start = text.find('<section class="textbody">')
+    if start < 0:
+        return text
+    end = text.find('</section>', start)
+    if end < 0:
+        end = len(text)
+    block = text[start:end]
+
+    # Infer the master chapter number from the first numbered section or theorem.
+    candidates = []
+    for pat in (
+        r'<span class="sectionnumber">\s*(\d+)\.(\d+)',
+        r'amsthmnumber(?:plain|definition|remark)">.*?<span class="textup">\s*(\d+)\.(\d+)',
+    ):
+        m = re.search(pat, block, flags=re.I | re.S)
+        if m:
+            candidates.append(int(m.group(1)))
+    if not candidates:
+        return text
+    chapter = candidates[0]
+
+    def remap_number(num: str) -> str:
+        # Only touch hierarchical numbers whose first component is this page's
+        # master chapter number.  This avoids altering unrelated integers.
+        if re.match(rf'^{chapter}(?:\.|$)', num):
+            return re.sub(rf'^{chapter}(?=\.|$)', '1', num, count=1)
+        return num
+
+    def repl_section(m):
+        inner = m.group(1)
+        mm = re.match(r'(\s*)(\d+(?:\.\d+)*)(.*)', inner, flags=re.S)
+        if not mm:
+            return m.group(0)
+        return '<span class="sectionnumber">' + mm.group(1) + remap_number(mm.group(2)) + mm.group(3) + '</span>'
+
+    block = re.sub(r'<span class="sectionnumber">(.*?)</span>', repl_section, block, flags=re.I | re.S)
+
+    # Theorem-like counters are emitted inside span.textup within amsthmnumber.
+    def repl_theorem(m):
+        prefix, num, suffix = m.group(1), m.group(2), m.group(3)
+        return prefix + remap_number(num) + suffix
+
+    block = re.sub(
+        r'((?:amsthmnumber(?:plain|definition|remark)"[^>]*>).*?<span class="textup">\s*)(\d+(?:\.\d+)*)(\s*</span>)',
+        repl_theorem,
+        block,
+        flags=re.I | re.S,
+    )
+
+    # Figure/table captions use the same master chapter component.
+    def repl_caption(m):
+        return m.group(1) + remap_number(m.group(2))
+
+    block = re.sub(r'((?:Figure|Table)&nbsp;)(\d+(?:\.\d+)*)', repl_caption, block)
+
+    return text[:start] + block + text[end:]
+
 def strip_book_chapter_label(text: str) -> str:
     # Keep chapter semantics in LaTeX/PDF, but make each generated webpage read
     # as a standalone article.
@@ -72,13 +138,22 @@ def strip_book_chapter_label(text: str) -> str:
     )
     return pattern.sub(r'\1', text)
 
+
+def fix_mathjax_environment_spacing(text: str) -> str:
+    """MathJax is stricter than TeX about lwarp's `\begin {cases}` form.
+    Normalise common environment delimiters before publishing.
+    """
+    return re.sub(r'\\(begin|end)\s+\{([A-Za-z*]+)\}', r'\\\1{\2}', text)
+
 for path in ROOT.glob("*.html"):
     if path.name.endswith("_html.html"):
         continue
 
     text = path.read_text(encoding="utf-8")
+    text = renumber_page_locally(text)
     text = strip_book_chapter_label(text)
     text = add_type_classes(text)
+    text = fix_mathjax_environment_spacing(text)
 
     config_tag = f"<script>{CONFIG_JS}</script>"
     script_tag = '<script src="theme.js" defer></script>'

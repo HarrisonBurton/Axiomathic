@@ -1,6 +1,8 @@
 \documentclass[../../Axiomathic.tex]{subfiles}
 
 \begin{document}
+\graphicspath{{sections/style/images/}{images/}}
+
 
 \chapter{Theorem Style Guide}
 
@@ -57,5 +59,44 @@ The following line is included specifically to check custom MathJax macros:
 \[
   \cycle{1,2,3,4}, \qquad \eps>0, \qquad \Z,\N,\Q, \qquad \lcm(6,8)=24.
 \]
+
+
+\section{Figure rendering checks}
+
+These figures are included as a web-rendering test for image-rich pages. They
+are not part of the mathematical style guide itself, but they let us check how
+ordinary LaTeX figures, paired images and image grids are presented online.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}{0.46\textwidth}
+        \centering
+        \includegraphics[width=0.86\linewidth]{00-01-06-0117-0001-Front.jpg}
+        \par\small Front
+    \end{minipage}\hfill
+    \begin{minipage}{0.46\textwidth}
+        \centering
+        \includegraphics[width=0.86\linewidth]{00-01-06-0117-0001-Rear.jpg}
+        \par\small Rear
+    \end{minipage}
+    \caption{A side-by-side card deck image test.}
+    \label{fig:style-side-by-side-deck}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tabular}{cccc}
+        \includegraphics[width=0.21\textwidth]{00-01-06-0117-0001-Front.jpg} &
+        \includegraphics[width=0.21\textwidth]{00-01-06-0117-0001-Rear.jpg} &
+        \includegraphics[width=0.21\textwidth]{00-01-06-0131-0001-Front.jpg} &
+        \includegraphics[width=0.21\textwidth]{00-01-06-0131-0001-Rear.jpg} \\
+        \includegraphics[width=0.21\textwidth]{XX-XXXX-XXXX-XX-Front.jpg} &
+        \includegraphics[width=0.21\textwidth]{XX-XXXX-XXXX-XX-Rear.jpg} &
+        \includegraphics[width=0.21\textwidth]{XX-XX-XX-XXXX-XXXX.jpg} &
+        \includegraphics[width=0.21\textwidth]{00-01-06-0117-0001-Front.jpg}
+    \end{tabular}
+    \caption{A $4\times 2$ image-grid rendering test.}
+    \label{fig:style-four-by-two-grid}
+\end{figure}
 
 \end{document}

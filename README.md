@@ -111,3 +111,42 @@ the next GitHub Actions build.
 
 Site-wide wording such as the homepage tagline remains in
 `web/site-config.base.json`.
+
+## v5 web-publication behaviour
+
+### Page-local numbering
+
+The combined PDF keeps the normal master-book chapter numbering. During HTML
+post-processing, each standalone webpage remaps its leading chapter component
+to `1`. For example, a master section numbered `3.1` is displayed online as
+`1.1`, and theorem `3.4` is displayed as `1.4`. The LaTeX counters themselves
+are not changed.
+
+### Print geometry
+
+The shared `preamble.tex` only loads `geometry`; it no longer fixes A5 paper
+size for every Axiomathic document. Print-specific geometry belongs in a
+separate print master. A starter is provided at
+`print/PlayingCardsBook.template.tex`.
+
+### Article images
+
+Keep site branding in `assets/`. Keep article-specific images beside the
+article, conventionally in an `images/` folder. The deployment build copies
+nested `images/`, `figures/`, and `media/` folders without publishing `.tex`
+sources.
+
+For the future Playing Cards note, use:
+
+```text
+sections/summary-notes/playing-cards/
+  Playing Cards.tex
+  images/
+```
+
+See `IMAGE-IMPORT-GUIDE.md` for what to upload next.
+
+
+## v6 note
+
+Axiomathic v6 removes the experimental Playing Cards page. Image-heavy rendering is now tested in the Theorem Style Guide instead.

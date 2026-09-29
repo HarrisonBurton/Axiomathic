@@ -30,7 +30,6 @@ jobs:
             texlive-fonts-recommended \
             texlive-science \
             texlive-pictures \
-            texlive-lang-japanese \
             texlive-bibtex-extra \
             poppler-utils
 

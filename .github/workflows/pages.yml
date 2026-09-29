@@ -32,6 +32,7 @@ jobs:
             texlive-pictures \
             texlive-bibtex-extra \
             texlive-lang-japanese \
+            dvisvgm \
             poppler-utils
 
       - name: Build PDF and website

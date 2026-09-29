@@ -27,6 +27,14 @@ rm -f ./*.html
 pdflatex -interaction=nonstopmode -halt-on-error "${WEBPROJECT}.tex"
 lwarpmk html -p "$WEBPROJECT"
 
+
+# Render any TikZ/LaTeX image fragments requested by lwarp.
+rm -rf "${WEBPROJECT}-images" lateximages
+lwarpmk limages -p "$WEBPROJECT"
+
+#Rebuild html now image files exist
+lwarpmk html -p "$WEBPROJECT"
+
 # If BibTeX is available, build the HTML bibliography too.
 if command -v bibtex >/dev/null 2>&1 && [[ -f "${WEBPROJECT}_html.aux" ]]; then
   bibtex "${WEBPROJECT}_html" || true
@@ -34,10 +42,8 @@ if command -v bibtex >/dev/null 2>&1 && [[ -f "${WEBPROJECT}_html.aux" ]]; then
   lwarpmk html -p "$WEBPROJECT"
 fi
 
-# Render any TikZ/LaTeX image fragments requested by lwarp.
-rm -rf "${WEBPROJECT}-images" lateximages
-lwarpmk limages -p "$WEBPROJECT" || true
-
+#Rebuild html again
+lwarpmk html -p "$WEBPROJECT"
 # 3. Rebuild website navigation from the LaTeX source-folder structure.
 python3 web/generate-site-config.py
 

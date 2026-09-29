@@ -1,14 +1,35 @@
 \usepackage{blindtext}
 
-% Axiomathic web export. lwarp must load before array/tikz/etc., but
-% standalone subfiles should remain ordinary PDFs.
+% Axiomathic web export.  This block is deliberately optional.
+% Some local MiKTeX installations have lwarp but not all of lwarp's newer
+% dependencies (for example verifycommand.sty).  In that case, the ordinary
+% PDF build should still work and the website should be left to GitHub Actions.
 \makeatletter
-\@ifclassloaded{subfiles}{}{%%
-  \usepackage[mathjax,HomeHTMLFilename=index]{lwarp}
-  \setcounter{FileDepth}{0}
-  \setcounter{SideTOCDepth}{1}
-  \CSSFilename{site.css}
-  \providecommand{\cs}[1]{\texttt{\textbackslash#1}}
+\@ifclassloaded{subfiles}{}{%
+  \IfFileExists{verifycommand.sty}{%
+    \usepackage[mathjax,HomeHTMLFilename=index]{lwarp}
+    \setcounter{FileDepth}{0}
+    \setcounter{SideTOCDepth}{1}
+    \CSSFilename{site.css}
+    \providecommand{\cs}[1]{\texttt{\textbackslash##1}}
+
+    % MathJax equivalents for Axiomathic custom maths commands.
+    % These affect HTML only; the normal PDF macros below remain unchanged.
+    \CustomizeMathJax{\newcommand{\eps}{\varepsilon}}
+    \CustomizeMathJax{\newcommand{\Z}{\mathbb{Z}}}
+    \CustomizeMathJax{\newcommand{\N}{\mathbb{N}}}
+    \CustomizeMathJax{\newcommand{\Q}{\mathbb{Q}}}
+    \CustomizeMathJax{\newcommand{\T}{\mathbb{T}}}
+    \CustomizeMathJax{\newcommand{\F}{\mathbb{F}}}
+    \CustomizeMathJax{\newcommand{\e}{\mathrm{e}}}
+    \CustomizeMathJax{\newcommand{\calP}{\mathcal{P}}}
+    \CustomizeMathJax{\newcommand{\calR}{\mathcal{R}}}
+    \CustomizeMathJax{\newcommand{\ord}{\operatorname{ord}}}
+    \CustomizeMathJax{\newcommand{\lcm}{\operatorname{lcm}}}
+    \CustomizeMathJax{\newcommand{\cycle}[1]{\left(##1\right)}}
+  }{%
+    \typeout{Axiomathic: lwarp dependency verifycommand.sty not found; skipping web-export package for this local PDF build.}%
+  }%
 }
 \makeatother
 
@@ -18,6 +39,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
+\usepackage{derivative}
 
 % Theorem styling
 \usepackage{xcolor}
@@ -31,6 +53,7 @@
 \usepackage{xparse}
 \usepackage{float}
 \usepackage{imakeidx}
+\makeindex[name=DIDs,title={List of Deck IDs}]
 
 \usepackage{tabularx}
 \usepackage{colortbl}
@@ -38,6 +61,10 @@
 \usepackage{arydshln}
 \usepackage{array}
 \usepackage{subfiles}
+
+% Geometry is loaded globally, but document-specific page dimensions belong in a print master.
+% This keeps the shared Axiomathic preamble neutral for PDF, subfiles and lwarp HTML.
+\usepackage{geometry}
 
 \usepackage{tikz}
 

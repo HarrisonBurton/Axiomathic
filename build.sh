@@ -26,11 +26,14 @@ fi
 # Render any TikZ/LaTeX image fragments requested by lwarp.
 lwarpmk limages -p "$PROJECT" || true
 
-# 3. Layer the reusable Axiomathic theme on top of lwarp's structural CSS.
+# 3. Rebuild website navigation from the LaTeX source-folder structure.
+python3 web/generate-site-config.py
+
+# 4. Layer the reusable Axiomathic theme on top of lwarp's structural CSS.
 cat lwarp.css web/axiomathic.css > site.css
 python3 web/postprocess.py
 
-# 4. Gather only deployable static files.
+# 5. Gather only deployable static files.
 rm -rf site
 mkdir -p site
 for f in *.html; do
@@ -42,13 +45,22 @@ done
 cp site.css web/theme.js "${PROJECT}.pdf" site/
 
 # Conventional asset folders are copied verbatim when present.
-for d in assets figures images; do
+for d in assets figures images media; do
   if [[ -d "$d" ]]; then
     cp -R "$d" site/
   fi
 done
 if [[ -d lateximages ]]; then
   cp -R lateximages site/
+fi
+
+# Article-specific media may live beside a subfile. Copy only media folders,
+# preserving their paths, rather than publishing the LaTeX sources themselves.
+if [[ -d sections ]]; then
+  while IFS= read -r -d '' f; do
+    mkdir -p "site/$(dirname "$f")"
+    cp "$f" "site/$f"
+  done < <(find sections -type f \( -path '*/images/*' -o -path '*/figures/*' -o -path '*/media/*' \) -print0)
 fi
 
 touch site/.nojekyll

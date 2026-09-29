@@ -1,0 +1,160 @@
+\documentclass[../Axiomathic.tex]{subfiles}
+
+\begin{document}
+
+
+
+\chapter{The easier Waring problem}
+The easier Waring problem asks for the least integer $v(k)$ such that every integer is a signed sum of at most $v(k)$ $k$th powers.  Exact values are remarkably elusive: $v(2)=3$ is known, while already $v(3)$ is either $4$ or $5$ and $v(4)$ is either $9$ or $10$.  I propose the three conjectures to solve this problem. 
+
+\section{Definition and historical background}
+
+For an integer $k\ge2$, let $v(k)$ denote the least $s$ such that every $n\in\Z$ can be written
+\begin{equation}\label{eq:def-v}
+  n=\eps_1x_1^k+\cdots+\eps_sx_s^k,
+  \qquad \eps_i\in\{\pm1\},\quad x_i\in\Z_{\ge0}.
+\end{equation}
+Because $0^k=0$, this is equivalently an ``at most $s$ summands'' definition: a shorter representation may be padded with zero terms.
+
+Wright introduced this variant in 1934 \cite{Wright1934}; Fuchs and Wright developed it further in 1939 \cite{FuchsWright1939}.  The existence of some finite $v(k)$ is elementary.  Repeated finite differencing gives
+\[
+  \Delta^{k-1}X^k=k!X+C_k,
+\]
+where the left side is a signed sum of $2^{k-1}$ $k$th powers.  Correcting the residue modulo $k!$ with copies of $\pm1^k$ yields Wright's bound
+\begin{equation}\label{eq:wright-elementary}
+  v(k)\le 2^{k-1}+\frac{k!}{2}.
+\end{equation}
+This argument is reproduced in modern expositions, and the best general estimates inherited from Waring theory are of order $k\log k$ \cite{Borwein2002,Vavilov2022}.
+
+The word ``easier'' should therefore not be read as ``solved''.  Representative classical bounds are
+\begin{equation}\label{eq:known-small}
+  v(2)=3,\qquad
+  4\le v(3)\le5,\qquad
+  9\le v(4)\le10,\qquad
+  5\le v(5)\le10,\qquad
+  6\le v(6)\le14,
+\end{equation}
+with $17\le v(8)\le28$ also recorded in the classical literature; see Revoy \cite{Revoy1991} and the later survey of Vavilov \cite{Vavilov2022}.  Thus no exact value beyond $k=2$ is presently known.
+
+\subsection{The benchmark $v(2)=3$}
+
+It is useful to prove the one exact case.  If $n=2m+1$ is odd, then
+\[
+  n=(m+1)^2-m^2.
+\]
+If $n=2m$ is even, then
+\[
+  n=m^2-(m-1)^2+1^2.
+\]
+Hence $v(2)\le3$.  On the other hand, $6$ is neither a sum of two squares nor a difference of two squares: in the difference case $(x-y)(x+y)=6$ would factor $6$ into two integers of the same parity, which is impossible; in the sum case reduction modulo $3$ forces both squares to be divisible by $3$, contradicting $x^2+y^2=6$.  Thus
+\[
+  \boxed{v(2)=3.}
+\]
+
+
+\section{Three conjectures}
+
+Before stating the conjectures we isolate the purely local quantity used below.
+
+\begin{defn}[Local covering number]
+For a modulus $m$, let $\Delta(k,m)$ be the least $s$ such that every residue class modulo $m$ is representable as a signed sum of at most $s$ $k$th-power residues.  Put
+\[
+  \Delta(k)=\sup_{m\ge2}\Delta(k,m).
+\]
+Wright's theory shows that this local quantity is finite; Borwein's exposition records, in particular,
+\[
+  \Delta(k)\le
+  \begin{cases}
+    (3k-1)/2,&k\text{ odd},\\
+    2k,&k\text{ even}.
+  \end{cases}
+\]
+See \cite[Sec.~4.1]{Borwein2002}.
+\end{defn}
+
+\subsection{Conjecture I: coprime submultiplicativity}
+
+\begin{conj}[Coprime submultiplicativity]\label{conj:coprime}
+If $(a,b)=1$, then
+\begin{equation}\label{eq:coprime-submult}
+  \boxed{v(ab)\le v(a)v(b).}
+\end{equation}
+\end{conj}
+
+The restriction $(a,b)=1$ is important.  Multiplying exponents can make the raw power residues more rigid: in a cyclic unit group, imposing the $ab$th-power condition intersects the restrictions coming from $a$ and $b$.  What the conjecture says is subtler: when the exponent blocks are coprime, the \emph{global representation cost} needed to overcome their combined structure should not exceed the product of the separate costs.
+
+If
+\[
+  k=\prod_{p^\alpha\parallel k}p^\alpha,
+\]
+then the maximal prime-power factors are pairwise coprime.  Repeated application of Conjecture~\ref{conj:coprime} would therefore give the useful envelope
+\begin{equation}\label{eq:prime-power-envelope}
+  \boxed{v(k)\le\prod_{p^\alpha\parallel k}v(p^\alpha).}
+\end{equation}
+This is the main practical purpose of the conjecture: determine the prime-power towers once, then assemble mixed exponents.
+
+\subsection{Conjecture II: the generic dimensional threshold}
+
+\begin{conj}[First-supercritical threshold]\label{conj:generic}
+If no local obstruction forces more than $k+1$ summands, i.e.
+\[
+  \Delta(k)\le k+1,
+\]
+then
+\begin{equation}\label{eq:generic-v}
+  \boxed{v(k)=k+1.}
+\end{equation}
+\end{conj}
+
+The upper-bound direction says that local admissibility plus one unit of density surplus should suffice.  The lower-bound direction is equally conjectural and should not be hidden: because large positive and negative powers may cancel, the elementary counting heuristic below does \emph{not} prove $v(k)\ge k+1$.  This is one of the genuinely difficult aspects of the easier Waring problem; see, for example, the discussion by Wooley in \cite{BukhMO}.
+
+\subsection{Conjecture III: binding $p$-adic resonance}
+
+The arithmetic family that repeatedly appears is
+\begin{equation}\label{eq:resonance-family}
+  k=\frac{p-1}{2}p^a,
+  \qquad p\text{ prime},\quad a\ge1,
+\end{equation}
+with the harmless exclusion $k=1$.  For $p=2$ this becomes the tower of powers of two after an index shift.
+
+We will prove in \cref{sec:resonance} that these exponents have a very simple local explanation: modulo the appropriate prime power, signed $k$th powers collapse to $\{0,\pm1\}$.  Moreover, if such a resonant exponent merely divides a larger exponent, the associated local cost is already dominated by the larger dimensional threshold.  This motivates the following classification.
+
+\begin{conj}[Binding resonance classification]\label{conj:resonance}
+The only local mechanisms capable of changing the generic answer $k+1$ are the prime-adic resonances generated by \eqref{eq:resonance-family}.  At the exponents where the resonance itself is binding, the sharp values are
+\begin{align}
+  v(2^r)&=2^{r+1}+1=2k+1,
+       &&r\ge2, \label{eq:two-formula}\\
+  v\!\left(\frac{p-1}{2}p^a\right)
+       &=\frac{p^{a+1}-1}{2},
+       &&p\text{ odd prime},\ a\ge1. \label{eq:odd-formula}
+\end{align}
+The endpoint $k=2$ remains $v(2)=3$.
+\end{conj}
+
+For $p=3,a=1$, formula \eqref{eq:odd-formula} gives $v(3)=4$, exactly the generic value $k+1$; this is the boundary case rather than a strict excess.  The first strict odd resonances are
+\[
+  k=9,10,21,27,50,55,\ldots
+\]
+with predicted values
+\[
+  13,12,24,40,62,60,\ldots
+\]
+respectively.
+
+Combining Conjectures~\ref{conj:generic} and \ref{conj:resonance} gives the compact candidate formula
+\begin{equation}\label{eq:candidate-formula}
+V(k)=
+\begin{cases}
+3,&k=2,\\
+2k+1,&k=2^r,\ r\ge2,\\[1mm]
+\dfrac{p^{a+1}-1}{2},&k=\dfrac{p-1}{2}p^a,\ p\text{ odd prime},\ a\ge1,\\[2mm]
+k+1,&\text{otherwise},
+\end{cases}
+\qquad
+\boxed{v(k)\stackrel?=V(k).}
+\end{equation}
+
+
+
+
+\end{document}

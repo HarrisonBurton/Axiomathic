@@ -1,0 +1,64 @@
+\documentclass[../Axiomathic.tex]{subfiles}
+
+\begin{document}
+
+% Keep a title page only when this chapter is compiled on its own.
+\ifSubfilesClassLoaded{%%
+  \title{Shuffling Playing Cards}
+  \author{Harrison J.P. Burton}
+  \date{\today}
+  \maketitle
+}{}
+
+\chapter{Shuffling Cards}
+
+For as long as I can remember, I have been interested in playing cards. There's an inate quality to a deck of cards which captures my attention. \\
+\\
+Whilst the obvious mathematical connection is to \textit{Probability Theory, } there is a more fundamental question to be asked; does shuffling cards suitably randomise a deck? How many shuffles does this take? These questions have been studied before and a brief summary will be included at the end of this section, but for the main part we shall look at a specific case of shuffling; \textit{Perfect Shuffles.}
+
+\section{The Landscape}
+
+Given a deck of $n$ cards, we define a a perfect shuffle as follows: a deck is split into two equal packets, and these are interweaved one by one. There is an amiguity here which leads to the following split: \\
+\begin{defn}\index{Shuffle!Out-Jogged Shuffle} An out-jogged shufflle interweaves the two packets, but keeps the top and bottom card in place. \end{defn}
+\begin{defn} \index{Shuffle!In-Jogged Shuffle} An in-jogged shuffle interweaves the two packets; every card is displaced. \end{defn}
+The difference occurs for obvious reasons, with two equal packets there exists a choice between which part contributes the bottom card, and this determines the rest of the shuffle. For an odd number of cards, we don't have this issue - the cards are split into two piles, one containing exactly one more card than the other. The slighter pile is then interweaved into the greater one in the natural manner. There is a question of which packet containes the extra card, however I take the convention that the top half is heavier\footnote{There is a note here, this is the mirror image of a shuffle with the bottom half the heavier. Imagine turning the deck over before starting, and you can see this  reflection.}. The first question to ask is whether or not the deck will ever return to its pre-shuffled order following a certain number of shuffles? \\
+If $n$ is odd, we have a unique shuffle - but if $n$ is even, we have to remove the ambiguity. In an out-jogged shuffle, we can consider the top and botom card glued together, neither of them move anywhere and they are always next to each other, in this way we can consider an out-jogged shuffle on a deck of $n$ cards as a perfect shuffle on a deck of $n-1$ cards. Similarly, we can think of an in-jogged shuffle on a deck of $n$ cards as a perfect shuffle on a deck of $n+1$ cards, with an invisible bottom card that never goes anywhere. This gives us the general set up, and for the remaineer of this text we will consider the perfect shuffle as the amended out-jogged shuffle.\footnote{The analysis is equal for the amended in-jog shuffle, but the number of cards is increased by 2} So, starting with a standard deck of $52$ cards, will the deck return to its original order after $k$ shuffles, and if so, what is the minimum value of $k$?.
+
+
+\subsection{Group Theory Approach}
+To my mind, the group theory approach is both the simplest and most tiresome. The realisation here is that a shuffle is simply a permutation on the set of $52$ objects, hence we can view the shuffle as an element in the group $S_{52}$. Now our question becomes about the order of this element, and trivial results from group theory tells us that it must be finite - and as such we've answered the first question; yes the deck does return to its original order. The second part, to find the minimum value of $k$ is similarly simple - the order of an element in a symmetric group, is the least common multiple of the cycle lengths, when the permutation is written in disjoint cycle notation. Someone skilled at farro shuffling cards can perform a perfect shuffle, alternatively you can do this manually; but by performing one perfect shuffle, you can write the disjoint cycles, which are :\[\cycle{0} \cycle{51}\] \[\cycle{1, 2, 4, 8, 16, 32, 13, 26}\] \[\cycle{3, 6, 12, 24, 48, 45, 39, 27}\]\[\cycle{5, 10, 20, 40, 29, 7, 14, 28}\]\[\cycle{9, 18, 36, 21, 42, 33, 15, 30}\] \[\cycle{11,22,44,37,23,46,41,31}\]\[ \cycle{17,34}\] \[\cycle{19,38,25,50,49,47,43,35}\]
+
+For convenience, I've labelled the top card $0$ and counted from there; you can see that the top and bottom cards are in singleton cycles because they don't move anywhere - you can also see that the 18th and 35th card rotate around, which is kind of interesting. It is also clear that the order of our element is $\lcm(1,2,8)$, which is clearly 8.\\ 
+Following the exact same method, we find that it takes $52$ in-jog shuffles, writing the exploicit cycle is left as an exercise. 
+,
+\subsection{Number Theory Approach}
+In the previous section, I labelled the top card as $0$ and continued from there - this isn't necessary for the group theory approach but it keeps consistency with what we're about to do here. Again, considering the deck with the above labelling, we proceed with an amended out-jog shuffle (considering the bottom card as non-existent).\\
+The cycle notation above should tell you the results of the first few shuffles; consider the second card first (as the top card boringly stays put), after one shuffle the card labbelled as $1$ is now in the third position, labelled $2$. After two shuffles, that card is now in the fifth position, labbeled $4$. After three shuffles, the card is in the ninth position, labelled $8$. There is a clear pattern, but let's consider another card, say the eighth card; the card labelled as $7$. Now there are exactly 7 cards above this card and 7 more to be interweaved - leaving this card with 14 above it - hence placing it in the fifteenth position with the label 14. This point doesn't need to be laboured futher, it should be clear that the labelling doubles each time for a card in the top half of the deck. The nuance comes with a card from the bottom half - say the 27th card (labbelled 26). This card is the top of the second pile, and as such becomes the second card after 1 shuffle - so aquires the label 1. Subsequent labels have already been discussed. In this situation, our doubling would encourage us to label the card as 52 - however, we only have labels from 0-51, and so we notice the congruence; modulo arithmetic. Pulling these pieces together, we find the following proposition:\\
+\begin{prop} \label{ShuffleMod} For a deck of $n$ cards, a card in the $a+1$ position, will be in the position $a \times 2^k+1 \mod(n-1)$ after $k$ shuffles. \end{prop}
+
+It's worth noting here that \ref{ShuffleMod} has an analogus for in-jogged shuffles; $n-1$ is replaced by $n+1$. Also note that bottom card is labbeled $n-1$ and $n-1 \equiv_{n-1}0$ which formalises our notion of considering the top and bottom cards as the same. \\
+Now, for $52$ cards, a card labbelled $a$ returns to it's place after $k$ shuffles if the following holds: \[ a \times 2^k \equiv_{51} a\] This obviously happen when $2^k \equiv_{51} 1$. Basic calculation shows that this occurs when $k=8$.\footnote{Since 2 is coprime to every odd number, it is in the group of units and hence has a finite order - thus proving that the deck will return to its original order.}
+
+Once again, calculation shows that $2^52 \equiv_{53} =1$. This number theory approach actually gives a more powereful result that the previous section; the minimal number of shuffles needed to return the deck to order, $k$, is the order of the element 2 in the group of unitis modulo $n \pm 1$. We know that the order of any element divides the Carmichael lambda function. We have $\lambda(51)=16$ and $\lambda(53)=52$. The later because $53$ is prime.
+
+\subsection{Chaos Theory Approach}
+There are obvious connections between the last two sections, and the ties to this branch are fairly observable as well. However, I find the following observation the most direct and the easiest to calculate. We begin with an introduction of a very specific map; the Binary Shift Map: \begin{defn}(The Binary Shift Map)\label{Binary Shift Map}\index{Binary Shift Map}
+\[f : [0,1] \rightarrow [0,1], f(x)=\begin{cases} 
+     2x & 0 \leq x < \frac{1}{2}\\
+2x-1 & \frac{1}{2} \leq x \leq 1\\
+   \end{cases}
+\] \end{defn}
+
+A simple result is that a point is periodic if and only if it is rational; it's order is the length of the repeating part of the binary expansion of said point.\footnote{The binary shift map gets its name because it moves every digit to the left much like multpilying by 10 does in decimals}. Now, we label our cards with points from the unit interval with the following procedure; the card in position $a+1$ is labelled as $\frac{a}{51}$.\footnote{Choosing points at random from the unit interval is a good representation of a non-perfect shuffle, known as the Gilbert-Shannon-Reed model}. This answers our question directly, the length of the period of $\frac{1}{n-1}$ in binary is the number of shuffles - for $n=52$, we have $\frac{1}{51} =_{2} .00000101...$ which has period length 8 and answers our question. 
+
+\subsection{Conclusion and Further Comments}
+
+So there are just three ways to view the issue of shuffle cards perfectly. For a standard deck of $52$ cards, the out-jogged shuffle leads to the rather small number of 8. The number theory approach above tells us that the maximum nmber of shuffles is $n$ as that is the maximum order of an element in the group of units modulo $n+1$. In fact, thiis maximum occurs when $2$ is a primitive root for the modulo and, assuming the Riemman Hypothesis, it can be shown that there is roughly a $37\%$ chance of this.
+\\
+A further, more difficult, questions is this; what if we don't require the shuffles to be perfect, just repeatable? This is essentially asking for the maximum order of an element in $S_{52}$ which is $180180$. \\
+
+Each appraoch above brings something different to the problem - the first approach allows for a hands on attempt - perform one shuffle, write the cycles and you get straight to your answer. The third appraoch allows you to punch into a calculator and find the answer immediately but - more importantly - it alludes to the genuine randomness of the shuffle since the binary shift map is chaotic for irrational points and almost all points in the unit interval are irrational. The second approach is nice as it straddles both. 
+			
+
+  
+\end{document}

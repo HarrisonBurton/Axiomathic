@@ -3,8 +3,10 @@ set -euo pipefail
 export TERM="${TERM:-xterm}"
 
 PROJECT="Axiomathic"
+WEBPROJECT="${PROJECT}_web"
 
-# 1. Traditional PDF from exactly the same LaTeX source.
+# 1. Traditional PDF from the ordinary LaTeX source.
+# This deliberately does not load lwarp.
 pdflatex -interaction=nonstopmode -halt-on-error "${PROJECT}.tex"
 if command -v bibtex >/dev/null 2>&1 && [[ -f "${PROJECT}.aux" ]]; then
   bibtex "$PROJECT" || true
@@ -12,19 +14,29 @@ fi
 pdflatex -interaction=nonstopmode -halt-on-error "${PROJECT}.tex"
 pdflatex -interaction=nonstopmode -halt-on-error "${PROJECT}.tex"
 
-# 2. HTML.  FileDepth=0 (in preamble.tex) gives one web page per chapter.
+# 2. HTML build through a temporary web wrapper.  The wrapper defines
+# AXIOMATHICWEB before inputting the normal master file, so lwarp is loaded for
+# the web build but not for ordinary local PDF compilation.
+cat > "${WEBPROJECT}.tex" <<'TEX'
+\def\AXIOMATHICWEB{}
+\input{Axiomathic.tex}
+TEX
+
 rm -f ./*.html
-lwarpmk html -p "$PROJECT"
+# Prime lwarp: the first LaTeX pass writes the .lwarpmkconf file that lwarpmk needs.
+pdflatex -interaction=nonstopmode -halt-on-error "${WEBPROJECT}.tex"
+lwarpmk html -p "$WEBPROJECT"
 
 # If BibTeX is available, build the HTML bibliography too.
-if command -v bibtex >/dev/null 2>&1 && [[ -f "${PROJECT}_html.aux" ]]; then
-  bibtex "${PROJECT}_html" || true
-  lwarpmk again -p "$PROJECT"
-  lwarpmk html -p "$PROJECT"
+if command -v bibtex >/dev/null 2>&1 && [[ -f "${WEBPROJECT}_html.aux" ]]; then
+  bibtex "${WEBPROJECT}_html" || true
+  lwarpmk again -p "$WEBPROJECT"
+  lwarpmk html -p "$WEBPROJECT"
 fi
 
 # Render any TikZ/LaTeX image fragments requested by lwarp.
-lwarpmk limages -p "$PROJECT" || true
+rm -rf "${WEBPROJECT}-images" lateximages
+lwarpmk limages -p "$WEBPROJECT" || true
 
 # 3. Rebuild website navigation from the LaTeX source-folder structure.
 python3 web/generate-site-config.py
@@ -64,5 +76,8 @@ if [[ -d sections ]]; then
 fi
 
 touch site/.nojekyll
+
+# Remove the generated wrapper source; auxiliary files are ignored/cleanable.
+rm -f "${WEBPROJECT}.tex"
 
 echo "Built site/index.html and ${PROJECT}.pdf"

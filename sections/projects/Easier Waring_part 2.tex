@@ -1,0 +1,1030 @@
+\documentclass[../Axiomathic.tex]{subfiles}
+
+\newtheorem{warning}[theorem]{Caution}
+
+\usepackage[a4paper,margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,longtable,array,tabularx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{bm}
+
+\hypersetup{colorlinks=true,linkcolor=blue!55!black,citecolor=blue!55!black,urlcolor=blue!55!black}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\setlist[itemize]{topsep=0.25em,itemsep=0.22em}
+\setlist[enumerate]{topsep=0.25em,itemsep=0.22em}
+
+
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\T}{\mathbb T}
+\newcommand{\F}{\mathbb F}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\e}{\mathrm e}
+\newcommand{\calP}{\mathcal P}
+\newcommand{\calR}{\mathcal R}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\lcm}{\operatorname{lcm}}
+
+\title{\textbf{Density and Rigidity in the Easier Waring Problem}\\
+\large Three conjectures, motivating examples, and a proof programme}
+\author{}
+\date{September 2026\\Version 4}
+
+\begin{document}
+\maketitle
+
+
+The easier Waring problem asks for the least integer $v(k)$ such that every integer is a signed sum of at most $v(k)$ $k$th powers.  Exact values are remarkably elusive: $v(2)=3$ is known, while already $v(3)$ is either $4$ or $5$ and $v(4)$ is either $9$ or $10$.  This note proposes a deliberately simple structural picture organised around three conjectures.
+
+First, for coprime exponents we conjecture the submultiplicative composition law
+\[
+  v(ab)\le v(a)v(b)\qquad ((a,b)=1).
+\]
+Second, in the absence of a binding local obstruction we conjecture that $v(k)$ equals the first supercritical dimensional threshold, namely $k+1$.  Third, we conjecture that the only local phenomena capable of changing this generic answer are $p$-adic resonances associated with
+\[
+  k=\frac{p-1}{2}p^a,
+\]
+with a separate endpoint rule for powers of $2$.
+
+The purpose of the note is explanatory rather than historical or definitive.  Standard ingredients---finite Fourier analysis, Bohr sets, Weyl equidistribution, the circle method, singular series, minor arcs, Prouhet--Tarry--Escott identities and $p$-adic congruences---are cited or proved where used.  The potentially new content is confined to the three conjectures and the way these standard ingredients are assembled into a density--rigidity picture.  Simple lattice examples, primes, and exact finite computations for low powers are used throughout to clarify what the conjectures are claiming and, equally importantly, what they are not claiming.
+
+
+\tableofcontents
+\newpage
+
+\section{The easier Waring problem}
+
+\subsection{Definition and historical background}
+
+For an integer $k\ge2$, let $v(k)$ denote the least $s$ such that every $n\in\Z$ can be written
+\begin{equation}\label{eq:def-v}
+  n=\eps_1x_1^k+\cdots+\eps_sx_s^k,
+  \qquad \eps_i\in\{\pm1\},\quad x_i\in\Z_{\ge0}.
+\end{equation}
+Because $0^k=0$, this is equivalently an ``at most $s$ summands'' definition: a shorter representation may be padded with zero terms.
+
+Wright introduced this variant in 1934 \cite{Wright1934}; Fuchs and Wright developed it further in 1939 \cite{FuchsWright1939}.  The existence of some finite $v(k)$ is elementary.  Repeated finite differencing gives
+\[
+  \Delta^{k-1}X^k=k!X+C_k,
+\]
+where the left side is a signed sum of $2^{k-1}$ $k$th powers.  Correcting the residue modulo $k!$ with copies of $\pm1^k$ yields Wright's bound
+\begin{equation}\label{eq:wright-elementary}
+  v(k)\le 2^{k-1}+\frac{k!}{2}.
+\end{equation}
+This argument is reproduced in modern expositions, and the best general estimates inherited from Waring theory are of order $k\log k$ \cite{Borwein2002,Vavilov2022}.
+
+The word ``easier'' should therefore not be read as ``solved''.  Representative classical bounds are
+\begin{equation}\label{eq:known-small}
+  v(2)=3,\qquad
+  4\le v(3)\le5,\qquad
+  9\le v(4)\le10,\qquad
+  5\le v(5)\le10,\qquad
+  6\le v(6)\le14,
+\end{equation}
+with $17\le v(8)\le28$ also recorded in the classical literature; see Revoy \cite{Revoy1991} and the later survey of Vavilov \cite{Vavilov2022}.  Thus no exact value beyond $k=2$ is presently known.
+
+\subsection{The benchmark $v(2)=3$}
+
+It is useful to prove the one exact case.  If $n=2m+1$ is odd, then
+\[
+  n=(m+1)^2-m^2.
+\]
+If $n=2m$ is even, then
+\[
+  n=m^2-(m-1)^2+1^2.
+\]
+Hence $v(2)\le3$.  On the other hand, $6$ is neither a sum of two squares nor a difference of two squares: in the difference case $(x-y)(x+y)=6$ would factor $6$ into two integers of the same parity, which is impossible; in the sum case reduction modulo $3$ forces both squares to be divisible by $3$, contradicting $x^2+y^2=6$.  Thus
+\[
+  \boxed{v(2)=3.}
+\]
+
+\subsection{What is standard and what is conjectural here}
+
+The note uses standard tools from additive combinatorics and analytic number theory.  In particular, convolution/Fourier identities, Bohr sets, Weyl equidistribution, major/minor arcs, $p$-adic congruences and polynomial identities are not claimed as new; appropriate references are supplied below.  The proposed contribution is instead the following organising picture:
+\begin{center}
+\fbox{\parbox{0.88\textwidth}{
+The number of summands should be governed by a competition between the number of available representations (\emph{density}) and arithmetic restrictions on where those representations can land (\emph{rigidity}).  Prime-power exponents are the natural local atoms, while coprime atoms should compose at no more than multiplicative cost.
+}}
+\end{center}
+
+\section{Three conjectures}
+
+Before stating the conjectures we isolate the purely local quantity used below.
+
+\begin{defn}[Local covering number]
+For a modulus $m$, let $\Delta(k,m)$ be the least $s$ such that every residue class modulo $m$ is representable as a signed sum of at most $s$ $k$th-power residues.  Put
+\[
+  \Delta(k)=\sup_{m\ge2}\Delta(k,m).
+\]
+Wright's theory shows that this local quantity is finite; Borwein's exposition records, in particular,
+\[
+  \Delta(k)\le
+  \begin{cases}
+    (3k-1)/2,&k\text{ odd},\\
+    2k,&k\text{ even}.
+  \end{cases}
+\]
+See \cite[Sec.~4.1]{Borwein2002}.
+\end{defn}
+
+\subsection{Conjecture I: coprime submultiplicativity}
+
+\begin{conj}[Coprime submultiplicativity]\label{conj:coprime}
+If $(a,b)=1$, then
+\begin{equation}\label{eq:coprime-submult}
+  \boxed{v(ab)\le v(a)v(b).}
+\end{equation}
+\end{conj}
+
+The restriction $(a,b)=1$ is important.  Multiplying exponents can make the raw power residues more rigid: in a cyclic unit group, imposing the $ab$th-power condition intersects the restrictions coming from $a$ and $b$.  What the conjecture says is subtler: when the exponent blocks are coprime, the \emph{global representation cost} needed to overcome their combined structure should not exceed the product of the separate costs.
+
+If
+\[
+  k=\prod_{p^\alpha\parallel k}p^\alpha,
+\]
+then the maximal prime-power factors are pairwise coprime.  Repeated application of Conjecture~\ref{conj:coprime} would therefore give the useful envelope
+\begin{equation}\label{eq:prime-power-envelope}
+  \boxed{v(k)\le\prod_{p^\alpha\parallel k}v(p^\alpha).}
+\end{equation}
+This is the main practical purpose of the conjecture: determine the prime-power towers once, then assemble mixed exponents.
+
+\subsection{Conjecture II: the generic dimensional threshold}
+
+\begin{conj}[First-supercritical threshold]\label{conj:generic}
+If no local obstruction forces more than $k+1$ summands, i.e.
+\[
+  \Delta(k)\le k+1,
+\]
+then
+\begin{equation}\label{eq:generic-v}
+  \boxed{v(k)=k+1.}
+\end{equation}
+\end{conj}
+
+The upper-bound direction says that local admissibility plus one unit of density surplus should suffice.  The lower-bound direction is equally conjectural and should not be hidden: because large positive and negative powers may cancel, the elementary counting heuristic below does \emph{not} prove $v(k)\ge k+1$.  This is one of the genuinely difficult aspects of the easier Waring problem; see, for example, the discussion by Wooley in \cite{BukhMO}.
+
+\subsection{Conjecture III: binding $p$-adic resonance}
+
+The arithmetic family that repeatedly appears is
+\begin{equation}\label{eq:resonance-family}
+  k=\frac{p-1}{2}p^a,
+  \qquad p\text{ prime},\quad a\ge1,
+\end{equation}
+with the harmless exclusion $k=1$.  For $p=2$ this becomes the tower of powers of two after an index shift.
+
+We will prove in \cref{sec:resonance} that these exponents have a very simple local explanation: modulo the appropriate prime power, signed $k$th powers collapse to $\{0,\pm1\}$.  Moreover, if such a resonant exponent merely divides a larger exponent, the associated local cost is already dominated by the larger dimensional threshold.  This motivates the following classification.
+
+\begin{conj}[Binding resonance classification]\label{conj:resonance}
+The only local mechanisms capable of changing the generic answer $k+1$ are the prime-adic resonances generated by \eqref{eq:resonance-family}.  At the exponents where the resonance itself is binding, the sharp values are
+\begin{align}
+  v(2^r)&=2^{r+1}+1=2k+1,
+       &&r\ge2, \label{eq:two-formula}\\
+  v\!\left(\frac{p-1}{2}p^a\right)
+       &=\frac{p^{a+1}-1}{2},
+       &&p\text{ odd prime},\ a\ge1. \label{eq:odd-formula}
+\end{align}
+The endpoint $k=2$ remains $v(2)=3$.
+\end{conj}
+
+For $p=3,a=1$, formula \eqref{eq:odd-formula} gives $v(3)=4$, exactly the generic value $k+1$; this is the boundary case rather than a strict excess.  The first strict odd resonances are
+\[
+  k=9,10,21,27,50,55,\ldots
+\]
+with predicted values
+\[
+  13,12,24,40,62,60,\ldots
+\]
+respectively.
+
+Combining Conjectures~\ref{conj:generic} and \ref{conj:resonance} gives the compact candidate formula
+\begin{equation}\label{eq:candidate-formula}
+V(k)=
+\begin{cases}
+3,&k=2,\\
+2k+1,&k=2^r,\ r\ge2,\\[1mm]
+\dfrac{p^{a+1}-1}{2},&k=\dfrac{p-1}{2}p^a,\ p\text{ odd prime},\ a\ge1,\\[2mm]
+k+1,&\text{otherwise},
+\end{cases}
+\qquad
+\boxed{v(k)\stackrel?=V(k).}
+\end{equation}
+
+\section{Why $k+1$ is the natural generic threshold}
+
+Let the roots satisfy $|x|\le P$.  There are $\asymp P$ possible $k$th powers, while a typical sum has magnitude on the scale $P^k$.  With $s$ summands there are $\asymp P^s$ tuples, so the crude number of candidate representations per target is
+\begin{equation}\label{eq:density-budget}
+  \boxed{P^{s-k}.}
+\end{equation}
+This gives three regimes:
+\[
+  s<k:\ P^{s-k}\to0,
+  \qquad
+  s=k:\ P^{s-k}\asymp1,
+  \qquad
+  s=k+1:\ P^{s-k}=P\to\infty.
+\]
+Thus $s=k$ is critical and $s=k+1$ is first supercritical.  This is the dimensional basis for Conjecture~\ref{conj:generic}.  The same counting principle underlies the familiar scale $A(X)\asymp X^{1/h}$ for thin additive bases; see Nathanson \cite{Nathanson1996}.
+
+\begin{warning}[Why this is not a lower-bound proof]
+For signed powers a fixed small target can be represented by enormous summands which almost cancel.  Counting tuples with $|x_i|\le P$ therefore does not rule out representations using roots much larger than the target scale.  The assertion $v(k)\ge k+1$ outside congruence obstructions is a substantive Diophantine claim, not a consequence of \eqref{eq:density-budget}.
+\end{warning}
+
+Squares show the intended mechanism in its simplest form.  Two squares are at the critical scale $P^0$; three squares are at the first supercritical scale $P$.  The fact $v(2)=3$ is consistent with the principle, although the proof of $v(2)=3$ given above is elementary and should not be confused with a general density theorem.
+
+\section{What ``rigidity'' means}
+
+The word \emph{rigidity} is used here as convenient shorthand rather than as a new formal invariant.  It means any structure that prevents the raw representation budget from spreading across the required targets.
+
+\subsection{Additive bases use at most $h$ summands}
+
+For a general set $A\subseteq\Z$, define
+\[
+  A^{(\le h)}=\bigcup_{j=0}^{h}jA,
+  \qquad 0A=\{0\}.
+\]
+We call $A$ a basis of order $h$ for $\Z$ if $A^{(\le h)}=\Z$.  For Waring sets, $0$ is itself an allowed summand, so ``at most $h$'' and ``exactly $h$ after padding'' coincide.  For arbitrary sets the distinction matters.
+
+For example, the odd integers
+\[
+  A=2\Z+1
+\]
+form a basis of order $2$: one summand covers all odd targets and two odd summands cover every even target.  Yet the exact two-fold sumset is only $A+A=2\Z$.  This is a useful reminder that rigidity must be interpreted relative to the representation problem being asked.
+
+Two further lattice examples are deliberately elementary:
+\[
+  2\Z+3\Z=\Z,
+  \qquad
+  4\Z+6\Z=2\Z.
+\]
+The densities are comparable, but in the second example a common parity restriction survives.  In the first, the two periodic structures are complementary.
+
+\subsection{Finite Fourier analysis}
+
+Let $G=\Z/q\Z$ and let $\nu$ be a probability distribution on $G$.  Write
+\[
+  \widehat\nu(j)=\sum_{r\bmod q}\nu(r)e^{2\pi ijr/q}.
+\]
+For independent summands, convolution gives the standard identity
+\begin{equation}\label{eq:fourier-conv}
+  \widehat{\nu_1*\cdots*\nu_h}(j)
+  =\prod_{i=1}^{h}\widehat\nu_i(j),
+\end{equation}
+which is basic finite Fourier analysis; see Tao--Vu \cite[Ch.~4]{TaoVu2006}.
+
+A simple consequence will be used repeatedly.
+
+\begin{lemma}[Fourier covering criterion]\label{lem:fourier-cover}
+Let $\nu$ be supported on the allowed residue summands modulo $q$ and suppose $0$ is allowed.  If
+\[
+  \sum_{j=1}^{q-1}|\widehat\nu(j)|^h<1,
+\]
+then every residue class modulo $q$ is representable by at most $h$ allowed summands.
+\end{lemma}
+
+\begin{proof}
+Fourier inversion gives
+\[
+  \nu^{*h}(r)=\frac1q\left(1+
+    \sum_{j=1}^{q-1}\widehat\nu(j)^h e^{-2\pi ijr/q}\right).
+\]
+Hence
+\[
+  q\nu^{*h}(r)
+  \ge 1-\sum_{j=1}^{q-1}|\widehat\nu(j)|^h>0.
+\]
+Thus $\nu^{*h}(r)>0$ for every $r$.  Because $0$ may be used to pad a shorter representation, this is also an at-most-$h$ statement.
+\end{proof}
+
+The lemma is not claimed as novel; it is simply a convenient formulation of Fourier inversion plus the triangle inequality.
+
+\subsection{Why congruences do not suffice for arbitrary sets}
+
+Fix irrational $\alpha$ and $0<\delta<1/(2h)$, and consider the standard Bohr set
+\[
+  A_{\alpha,\delta}=\{n\in\Z:\|n\alpha\|<\delta\}.
+\]
+For every fixed modulus $q$, each residue class $r\pmod q$ has the same asymptotic density inside $A_{\alpha,\delta}$: along $n=r+qm$, the sequence $(r+qm)\alpha$ is equidistributed mod $1$.  Nevertheless every sum of at most $h$ elements of this symmetric set obeys
+\[
+  \|n\alpha\|<h\delta<\frac12,
+\]
+so $A_{\alpha,\delta}^{(\le h)}\ne\Z$.
+
+Thus fixed congruence information does not capture all possible rigidity for an arbitrary set.  Bohr sets and Fourier-analytic structure are standard topics in additive combinatorics; see \cite{TaoVu2006}.
+
+\subsection{Why powers are different: Weyl and the circle method}
+
+The Bohr obstruction above cannot persist for the set of $k$th powers.  Weyl's equidistribution theorem states that if a polynomial has at least one irrational nonconstant coefficient, then its integer values are equidistributed modulo $1$ \cite{Weyl1916}.  In particular, for irrational $\alpha$,
+\begin{equation}\label{eq:weyl}
+  \frac1P\sum_{n\le P}e^{2\pi i\alpha n^k}\longrightarrow0.
+\end{equation}
+So powers cannot remain trapped in a fixed irrational Bohr neighbourhood.
+
+This does \emph{not} prove that congruences are the only thing one needs to check.  The circle method explains the remaining distinction.  Put
+\[
+  F_k(\alpha;P)=\sum_{|x|\le P}e^{2\pi i\alpha x^k}.
+\]
+A representation count is a Fourier coefficient of a power of $F_k$.  Frequencies close to rationals $a/q$ form the \emph{major arcs}; their contribution produces congruence/$p$-adic local factors, typically assembled into a singular series.  The complementary \emph{minor arcs} should exhibit cancellation.  This major/minor-arc decomposition is standard; see Vaughan \cite{Vaughan1997}.
+
+The defensible conclusion is therefore:
+\begin{center}
+\fbox{\parbox{0.88\textwidth}{
+For pure power sets, Weyl eliminates the kind of fixed irrational hard obstruction exhibited by a Bohr set.  Rational and $p$-adic frequencies are the source of persistent arithmetic main terms.  What remains is the analytic problem of proving sufficiently strong minor-arc cancellation at the desired number of variables.
+}}
+\end{center}
+This is exactly why Conjecture~\ref{conj:generic} is plausible but nontrivial.  Four cubes already sit at the predicted first-supercritical level, yet $v(3)=4$ remains open.
+
+
+\section{How this language sits inside the Waring literature}\label{sec:literature-translation}
+
+The density--rigidity terminology above is not intended to replace the classical language of the Hardy--Littlewood method.  It is a compact way of keeping track of three familiar pieces of the argument:
+\[
+\begin{array}{ccl}
+\text{language in this note} && \text{classical analytic language}\\
+\hline
+\text{density budget} && \text{archimedean scale of the expected main term}\\
+\text{local rigidity} && \text{local densities / singular series}\\
+\text{residual rigidity} && \text{minor arcs / Weyl-sum correlations}.
+\end{array}
+\]
+Thus a typical representation count should be thought of schematically as
+\begin{equation}\label{eq:main-term-residual}
+  R(n)=\underbrace{\mathfrak J(n)\mathfrak S(n)}_{\text{archimedean density }\times\text{ local arithmetic density}}
+  +\underbrace{E(n)}_{\text{minor-arc residual}},
+\end{equation}
+where the first term expresses the classical local-to-global prediction and the second term is the analytic obstruction to proving that prediction at the desired number of variables.  The conjectural step in this paper is not the decomposition \eqref{eq:main-term-residual}; it is the claim that, for the easier Waring thresholds, the competition between the first-supercritical density budget and binding $p$-adic rigidity should be sharp.
+
+\subsection{Local density is finer than local solubility: four cubes}
+
+A useful precedent for the present viewpoint is the computational and probabilistic work of Deshouillers, Hennecart and Landreau on sums of four nonnegative cubes \cite{Deshouillers1999}.  In their notation, let $C_4$ denote the integers representable as sums of four nonnegative cubes.  Cubes modulo $9$ lie in $\{0,\pm1\}$, and the number of four-cube representations of a residue class $k\pmod 9$ is highly nonuniform:
+\[
+\begin{array}{c|ccccc}
+ k\pmod 9&0&\pm1&\pm2&\pm3&\pm4\\
+\hline
+ \rho(k,9)/9^3&19/9&16/9&10/9&4/9&1/9.
+\end{array}
+\]
+All residue classes are locally soluble with four cubes, but the classes $\pm4\pmod 9$ are much thinner.  The authors exploit exactly this arithmetic thinning, refining the computation further by moduli such as $7$, $13$, $8$ and $19$, and conjecture that
+\[
+  7,373,170,279,850
+\]
+is the largest integer not expressible as a sum of four nonnegative cubes, with exactly $113,936,676$ positive exceptions in total \cite{Deshouillers1999}.
+
+This example is valuable because it cleanly separates two notions:
+\[
+  \text{local solubility}\quad\ne\quad\text{healthy local density}.
+\]
+Our use of ``local rigidity'' should be read in this stronger sense.  A local class may be possible, but still so thin that it materially changes where the difficult exceptions occur.
+
+The same paper also gives an arithmetic refinement of an Erd\H{o}s--R\'enyi style random model.  The naive model uses only the sparsity of cubes; the refined model adjusts for their uneven distribution in arithmetic progressions.  This is essentially the same philosophical correction as replacing a raw density budget by
+\[
+  \text{density budget}\times\text{local arithmetic factor}.
+\]
+
+\subsection{Almost all plus convolution: three cubes and a sixth power}
+
+Br\"udern and Wooley prove that almost all natural numbers not congruent to $5\pmod 9$ are sums of three cubes and a sixth power, and that the number of such representations is almost always of the expected order \cite{BruedernWooley2001}.  If $\nu_6(n)$ denotes the number of representations
+\[
+  n=x_1^3+x_2^3+x_3^3+x_4^6,
+\]
+the formal circle-method prediction has the shape
+\[
+  \nu_6(n)\sim \Gamma(4/3)^3\mathfrak S_6(n)n^{1/6}.
+\]
+They prove, in particular, that for some $C,\delta>0$ the lower bound
+\[
+  \nu_6(n)\ge C\mathfrak S_6(n)n^{1/6}
+\]
+fails for at most $O(N^{1-\delta})$ integers $n\le N$, and the singular series is bounded below away from the prohibited class $5\pmod 9$.
+
+The striking point for our purposes is their convolution step.  Let $R(n)$ count representations of $n$ as six cubes and two sixth powers.  Then
+\[
+  R(n)=\sum_{1\le m\le n}\nu_6(m)\nu_6(n-m).
+\]
+Since only a sparse set of $m$ is bad, one can choose many $m$ for which both $m$ and $n-m$ are good, subject to the simple congruence exclusions.  This yields the expected lower order for every sufficiently large $n$.
+
+This is a rigorous example of a phenomenon that Conjecture~\ref{conj:coprime} is intended to capture more abstractly:
+\[
+  \boxed{\text{composition can wash out rigidity rather than merely compound it}.}
+\]
+An individual block has a forbidden residue class, but two such blocks together recover universality.
+
+\subsection{No local obstruction is still not a theorem: a mixed problem at the convexity boundary}
+
+Wooley's work on representations
+\begin{equation}\label{eq:mixed-236}
+  n=x_1^2+x_2^2+x_3^3+x_4^3+x_5^6+x_6^6
+\end{equation}
+shows why the analytic residual in \eqref{eq:main-term-residual} cannot be ignored \cite{WooleyTwoSquares}.  The reciprocal exponent sum is
+\[
+  2\cdot\frac12+2\cdot\frac13+2\cdot\frac16=2,
+\]
+placing the problem at the convexity boundary for the classical circle method.  There is no local obstruction: the associated singular series satisfies
+\[
+  1\ll \mathfrak S(n)\ll 1
+\]
+for every integer $n$.  Nevertheless, proving the expected asymptotic formula is delicate; Wooley proves that the formula fails for at most
+\[
+  O((\log X)^{3+\eps})
+\]
+integers $n\le X$.
+
+This is an important caution for Conjecture~\ref{conj:generic}.  A positive local factor and a generous-looking density budget do not by themselves prove representation.  They only identify the expected main term.  The residual Weyl-sum correlations must still be controlled.
+
+\subsection{Auxiliary equations and residual rigidity}
+
+The Vaughan--Wooley iterative work on classical Waring's problem makes this residual issue concrete \cite{VaughanWooley1994}.  Their estimates depend on bounding the number of solutions of auxiliary equations such as
+\[
+  x_1^k+\cdots+x_s^k=y_1^k+\cdots+y_s^k,
+\]
+often with the variables restricted to smooth numbers.  These moment estimates, efficient differencing, and major/minor-arc dissections are the analytic form of what this note calls residual rigidity: after the local factors have been separated, one still needs to understand high-order correlations between powers.
+
+In this sense the present paper's terminology is deliberately modest.  It repackages standard analytic distinctions in a way that is convenient for stating the three threshold conjectures.
+
+\subsection{A boundary warning from rational two cubes}
+
+Finally, the recent work of Alp\"oge, Bhargava and Shnidman on integers expressible as sums of two rational cubes gives a useful warning about scope \cite{AlpogeBhargavaShnidman}.  The equation
+\[
+  x^3+y^3=n,\qquad x,y\in\Q,
+\]
+has no local obstruction for any integer $n$, yet they prove that a positive proportion of integers are expressible in this way and a positive proportion are not.  The problem is governed by the arithmetic of cubic twists of elliptic curves and Selmer groups, not by a simple local density threshold.
+
+Thus the phrase ``no local obstruction'' is not, in general, a local-to-global theorem.  Conjecture~\ref{conj:generic} is intentionally narrower: it concerns unrestricted signed additive bases generated by integral pure powers, at the first supercritical number of summands, after the explicit $p$-adic resonances have been accounted for.
+
+\subsection{Quadratic forms and finite universality tests}
+
+The Conway--Schneeberger Fifteen Theorem, in Bhargava's streamlined proof, says that a positive-definite quadratic form with integer matrix represents every positive integer if it represents every positive integer up to $15$ \cite{Bhargava2000}.  Conway's accompanying discussion emphasises the matrix and lattice structure underlying quadratic forms \cite{Conway2000}.  This is relevant here only by analogy.  It shows that in a highly structured quadratic setting, a finite local-looking test can force global universality.
+
+The analogy should not be overstated.  Quadratic forms have bilinear structure and reduction theory that pure higher powers do not.  The speculative tensor/projector comments in the previous section are therefore best read as proof-search heuristics for Conjecture~\ref{conj:coprime}, not as evidence that a higher-degree Fifteen Theorem is available.
+
+\section{The $p$-adic resonance mechanism}\label{sec:resonance}
+
+This section proves the elementary local calculations that motivate Conjecture~\ref{conj:resonance}.
+
+\subsection{Odd primes}
+
+\begin{prop}[Odd-prime resonance divisor]\label{prop:odd-resonance}
+Let $p$ be an odd prime, $a\ge1$, and
+\[
+  r=\frac{p-1}{2}p^a,
+  \qquad q=p^{a+1}.
+\]
+If $r\mid k$, then the signed $k$th-power residues modulo $q$ are exactly
+\[
+  \{0,\pm1\}.
+\]
+Consequently
+\begin{equation}\label{eq:odd-local-cost}
+  \Delta(k,q)=\frac{q-1}{2}=\frac{p^{a+1}-1}{2}.
+\end{equation}
+\end{prop}
+
+\begin{proof}
+The unit group $(\Z/q\Z)^\times$ is cyclic of order \cite[Ch.~6]{HardyWright2008}
+\[
+  \varphi(q)=(p-1)p^a=2r.
+\]
+Hence for every unit $u$, $u^r\in\{\pm1\}$.  If $k=tr$, then $u^k=(u^r)^t\in\{\pm1\}$; after allowing the external Waring sign, both $+1$ and $-1$ are available.
+
+If $p\mid x$, then $v_p(x^k)\ge k\ge r\ge a+1$, so $x^k\equiv0\pmod q$.  Thus the signed residue set is $\{0,\pm1\}$.  A sum of at most $s$ such residues has an integer representative in $[-s,s]$.  Since $q$ is odd, all $q$ residue classes are covered if and only if $2s+1\ge q$, proving \eqref{eq:odd-local-cost}.
+\end{proof}
+
+Taking $k=r$ gives the rigorous lower bound
+\begin{equation}\label{eq:odd-lower}
+  v\!\left(\frac{p-1}{2}p^a\right)
+  \ge \frac{p^{a+1}-1}{2}.
+\end{equation}
+The excess over the generic $k+1$ scale is
+\begin{equation}\label{eq:odd-excess}
+  \frac{p^{a+1}-1}{2}-(k+1)=\frac{p^a-3}{2}.
+\end{equation}
+Thus $k=3$ is exactly the boundary case; $9,10,21,\ldots$ are strict local excesses.
+
+\subsection{Powers of two}
+
+\begin{lemma}\label{lem:odd-power-two}
+If $x$ is odd and $j\ge1$, then
+\[
+  x^{2^j}\equiv1\pmod{2^{j+2}}.
+\]
+\end{lemma}
+
+\begin{proof}
+For $j=1$, every odd square is $1\pmod8$.  If
+$x^{2^j}=1+2^{j+2}c$, then squaring gives
+\[
+ x^{2^{j+1}}=1+2^{j+3}c+2^{2j+4}c^2\equiv1\pmod{2^{j+3}},
+\]
+which completes the induction.
+\end{proof}
+
+\begin{prop}[Two-adic resonance and the $2k+1$ lower bound]\label{prop:two-resonance}
+Let $r=2^j$ with $j\ge2$.  If $r\mid k$, then modulo $4r$ the signed $k$th-power residues are $\{0,\pm1\}$, and hence
+\[
+  \Delta(k,4r)=2r.
+\]
+In particular, when $k=r$,
+\[
+  \Delta(k,4k)=2k.
+\]
+Moreover
+\begin{equation}\label{eq:two-lower}
+  \boxed{v(k)\ge2k+1\qquad(k=2^j\ge4).}
+\end{equation}
+\end{prop}
+
+\begin{proof}
+If $x$ is odd, Lemma~\ref{lem:odd-power-two} gives $x^r\equiv1\pmod{4r}$, and hence $x^k\equiv1\pmod{4r}$.  If $x$ is even, then $v_2(x^k)\ge k\ge r=2^j\ge j+2$, so $x^k\equiv0\pmod{4r}$.  Thus the signed residues are $\{0,\pm1\}$.  Since $4r$ is even, an interval $[-s,s]$ covers all residues only when $s\ge2r$, and $s=2r$ does cover them.
+
+Now take $k=r$.  Suppose, for contradiction, that $6k$ were a signed sum of at most $2k$ $k$th powers.  Modulo $4k$ the target is $2k$.  Among at most $2k$ contributions from $\{0,\pm1\}$, obtaining the class $2k\pmod{4k}$ forces exactly $2k$ odd summands, all with the same sign.  Since the target is positive, all signs must be positive.  If any odd base has absolute value at least $3$, the sum is at least
+\[
+  3^k+(2k-1)>6k\qquad(k\ge4).
+\]
+Thus every base would have to be $\pm1$, giving total $2k$, not $6k$.  This contradiction proves \eqref{eq:two-lower}.
+\end{proof}
+
+Wright's general local bound $\Delta(k)\le2k$ for even $k$, quoted above from \cite{Borwein2002}, combines with the proposition to show that for powers of two $k\ge4$ the \emph{local} covering number is exactly $2k$.  The conjectural global value $2k+1$ is therefore only one larger, and the lower bound \eqref{eq:two-lower} shows that this extra term is genuinely necessary.
+
+\subsection{Why a resonance can disappear after multiplication}
+
+The preceding calculations also explain why an exceptional factor need not make a larger exponent exceptional.
+
+\begin{prop}[Absorption of a proper resonance divisor]\label{prop:absorption}
+For the odd-prime resonance of Proposition~\ref{prop:odd-resonance}, let $k=tr$ with $t\ge2$.  Then its local cost satisfies
+\[
+  \frac{p^{a+1}-1}{2}<2r\le k<k+1.
+\]
+For the two-adic resonance of Proposition~\ref{prop:two-resonance}, if $k=tr$ with $t\ge2$, then its local cost is
+\[
+  2r\le k<k+1.
+\]
+Thus these particular local collapses can dominate the dimensional threshold only when the exponent is the resonance itself, not a proper multiple of it.
+\end{prop}
+
+\begin{proof}
+For odd $p$,
+\[
+ \frac{(p^{a+1}-1)/2}{r}
+ =\frac{p^{a+1}-1}{(p-1)p^a}<\frac{p}{p-1}<2.
+\]
+The rest is immediate.  The two-adic statement is immediate from $2r\le tr$.
+\end{proof}
+
+This proposition is one of the main reasons the exceptional family \eqref{eq:resonance-family} is plausible.  It proves that the most transparent $\{0,\pm1\}$ collapse can persist inside a composite exponent without remaining binding.  Conjecture~\ref{conj:resonance} is the stronger assertion that there is no different local mechanism capable of creating further threshold-dominating exceptions.
+
+\subsection{The pair $50$ and $150$}
+
+The contrast between $50$ and $150$ is particularly instructive.
+
+For
+\[
+  50=\frac{5-1}{2}5^2,
+\]
+Proposition~\ref{prop:odd-resonance} gives, modulo $125$,
+\[
+  \Delta(50,125)=\frac{125-1}{2}=62.
+\]
+The generic dimensional threshold is only $51$, so the local obstruction wins and the conjecture predicts
+\[
+  \boxed{v(50)=62.}
+\]
+
+For $150=3\cdot50$, the same $5$-adic collapse remains visible because $50\mid150$, but its cost is still only $62$.  There is also the familiar cubic-type collapse modulo $9$, with local cost $4$.  Even the deliberately pessimistic act of adding these two scales gives only $66$, far below
+\[
+  150+1=151.
+\]
+The raw density budget at $66$ summands is
+\[
+  P^{66-150}=P^{-84}\to0,
+\]
+whereas at $151$ summands it is $P$.  Thus the conjecture predicts
+\[
+  \boxed{v(150)=151.}
+\]
+The local structures have not vanished; rather, they have been \emph{absorbed} by a much larger dimensional budget.
+
+\section{Why coprime composition is plausible}
+
+Conjecture~\ref{conj:coprime} should not be justified by naive substitution.  If
+\[
+  x=\sum_j\eps_jy_j^b,
+\]
+then in general $x^a$ is not a sum of the corresponding $ab$th powers because cross terms appear.  The evidence instead comes from the algebra of character projectors and from the classical identity-based approach to the easier Waring problem.
+
+\subsection{An exact projector composition law}
+
+For $m\ge2$, define a root-of-unity projector on Laurent polynomials by
+\[
+  (\Pi_m f)(z)=\frac1m\sum_{\omega^m=1}\omega^{-1}f(\omega z).
+\]
+On a monomial $z^j$,
+\[
+  \Pi_m(z^j)=
+  \begin{cases}
+    z^j,&j\equiv1\pmod m,\\
+    0,&\text{otherwise}.
+  \end{cases}
+\]
+Therefore:
+
+\begin{prop}[Projector composition]\label{prop:projector}
+For all positive integers $a,b$,
+\begin{equation}\label{eq:projector-lcm}
+  \boxed{\Pi_a\Pi_b=\Pi_{\lcm(a,b)}.}
+\end{equation}
+In particular, if $(a,b)=1$, then
+\[
+  \boxed{\Pi_a\Pi_b=\Pi_{ab}.}
+\]
+\end{prop}
+
+\begin{proof}
+Both sides act diagonally on monomials.  The left side fixes $z^j$ precisely when
+$j\equiv1\pmod a$ and $j\equiv1\pmod b$, which is equivalent to
+$j\equiv1\pmod{\lcm(a,b)}$.
+\end{proof}
+
+This is not yet a theorem about $v(k)$: the projector naturally lives over cyclotomic coefficients, while the easier Waring problem requires integral bases and signs $\pm1$.  It does, however, explain why \emph{coprime} composition is algebraically distinguished.  When $a$ and $b$ share a prime, the projector only reaches the least common multiple and therefore misses the extra prime-power depth in $ab$---exactly where new $p$-adic rigidity can arise.
+
+\subsection{Polynomial identities and arithmetic descent}
+
+Classically, effective upper bounds for small $v(k)$ often come from identities which collapse a signed sum of $k$th powers to a linear polynomial.  Prouhet--Tarry--Escott solutions provide a systematic source; Borwein explains the resulting bound
+\[
+  v(k)\le 2n+\Delta(k,C)
+\]
+when a $2n$-term identity has linear coefficient $C$ \cite{Borwein2002}.  Rao's sixth-power identity and Habsieger's group-representation interpretation show that symmetry can cancel unwanted polynomial components very efficiently \cite{Rao1938,Habsieger1991}.
+
+The proposed composition theorem can therefore be viewed as an \emph{arithmetic descent problem}: the cyclotomic projector composes exactly at coprime degrees, and one asks whether it can be descended to signed integral identities without paying more than multiplicative cost, including the finite modular correction.
+
+\subsection{Conditional prime-power envelope}
+
+The prime-power viewpoint gives concrete targets.  Conjectures~\ref{conj:generic} and \ref{conj:resonance} predict
+\[
+  v(p^a)=p^a+1\qquad(p\ge5),
+\]
+while the $2$- and $3$-power towers carry the exceptional formulas.  If Conjecture~\ref{conj:coprime} also holds, then mixed exponents receive immediate upper bounds.  For example:
+\begin{center}
+\begin{tabular}{ccl}
+\toprule
+$k$ & prime-power decomposition & conditional composition bound \\
+\midrule
+$21$ & $3\cdot7$ & $v(21)\le4\cdot8=32$ \\
+$50$ & $2\cdot25$ & $v(50)\le3\cdot26=78$ \\
+$150$ & $2\cdot3\cdot25$ & $v(150)\le3\cdot4\cdot26=312$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+The sharp density--rigidity predictions are respectively $24,62,151$.  Thus composition is intended as an upper-bound engine, not as a formula for the exact answer.
+
+There is also a notable conditional asymptotic consequence.  Apart from constant factors contributed by the $2$- and $3$-power towers,
+\[
+  \prod_{p^a\parallel k}(p^a+1)
+  =k\prod_{p^a\parallel k}\left(1+\frac1{p^a}\right)
+  \le k\prod_{p\mid k}\left(1+\frac1p\right).
+\]
+Mertens' theorem implies that the final product is $O(\log\log k)$ \cite[Ch.~22]{HardyWright2008}.  Hence the prime-power theorem together with coprime submultiplicativity would imply the improved general scale
+\begin{equation}\label{eq:kloglog}
+  \boxed{v(k)=O(k\log\log k)}
+\end{equation}
+conditionally on the conjectured prime-power bounds and composition law.  This is one indication that Conjecture~\ref{conj:coprime}, if true, would be a substantial theorem rather than a formal convenience.
+
+\section{Broader additive examples: density is not enough}
+
+\subsection{Primes as a critical sparsity benchmark}
+
+The prime number theorem and Euler--Mertens divergence give \cite[Chs.~22--23]{HardyWright2008}
+\[
+  \pi(X)\sim\frac{X}{\log X},
+  \qquad
+  \sum_p\frac1p=\infty.
+\]
+Erd\H{o}s conjectured that any set $A\subseteq\N$ with divergent reciprocal sum
+\[
+  \sum_{a\in A}\frac1a=\infty
+\]
+contains arithmetic progressions of every finite length \cite{Erdos1980}.  The full conjecture remains open.  Green and Tao proved the corresponding conclusion for the primes: they contain arbitrarily long arithmetic progressions \cite{GreenTao2008}.
+
+This makes the primes a useful heuristic benchmark.  Their counting function lies at the logarithmic scale $X/\log X$, while their harmonic mass still diverges.  Long arithmetic progressions convert sparse points into highly regular additive pieces.  But this does not by itself give a basis theorem: the orientation of the local structure still matters.
+
+\subsection{Shift the primes by one}
+
+Let
+\[
+  \calP=\{2,3,5,7,\ldots\},
+  \qquad A=\calP+1=\{3,4,6,8,12,\ldots\}.
+\]
+Then
+\[
+  |A\cap[1,X]|\sim\frac{X}{\log X},
+\]
+so $A$ has the same first-order density and the same divergent harmonic scale as the primes.  Translation also preserves arithmetic progressions exactly.  Nevertheless almost every element of $A$ is even; the sole odd member is $3$.
+
+For an odd integer $N>3$, a representation by at most two elements of $A$ must be
+\[
+  N=3+(p+1),
+\]
+so
+\[
+  N\in A^{(\le2)}\quad\Longleftrightarrow\quad N-4\text{ is prime}.
+\]
+Thus $A$ has no hope of being an order-two basis for all integers, despite having the same density and internal progression structure as the primes.
+
+Compare this with $2\Z+1$, which \emph{is} an order-two basis.  Both sets are strongly parity-biased, but the odd coset is fully occupied in $2\Z+1$ and almost empty in $\calP+1$.  This example captures the role of rigidity particularly cleanly:
+\begin{center}
+\fbox{\parbox{0.86\textwidth}{
+Density measures the number of opportunities.  Rigidity records where those opportunities are allowed to land, and how well they mix inside the accessible residue classes.
+}}
+\end{center}
+
+This is the broader setting in which the power conjectures should be read.  The special advantage of power sets is not that they are free of structure; it is that their non-rational structure is strongly controlled by Weyl theory, leaving a comparatively explicit $p$-adic landscape plus the analytic minor-arc problem.
+
+\section{Exact finite computations for small powers}
+
+Finite computation cannot prove an asymptotic basis statement, especially in a problem with potentially enormous cancellation.  It can nevertheless test whether the density--rigidity picture is qualitatively sensible.
+
+For a root cutoff $P$, define
+\[
+  S_{k,P}=\{0,\pm1^k,\ldots,\pm P^k\}
+\]
+and recursively compute exact Boolean sumsets
+\[
+  R_0=\{0\},\qquad R_{h+1}=R_h+S_{k,P}.
+\]
+The table records the proportion of targets $1\le n\le P^k$ lying in $R_h$.  These are exact finite enumerations for the stated $P$, not statistical samples.
+
+\begin{center}
+\begin{tabular}{ccrr}
+\toprule
+$k$ & $P$ & $h$ & coverage of $1\le n\le P^k$ \\
+\midrule
+2 & 200 & 2 & $48.51\%$ \\
+2 & 200 & 3 & $100.00\%$ \\
+\addlinespace
+3 & 40 & 3 & $34.73\%$ \\
+3 & 40 & 4 & $94.03\%$ \\
+\addlinespace
+4 & 25 & 4 & $18.63\%$ \\
+4 & 25 & 5 & $45.25\%$ \\
+4 & 25 & 8 & $94.90\%$ \\
+4 & 25 & 9 & $100.00\%$ \\
+\addlinespace
+5 & 20 & 5 & $11.24\%$ \\
+5 & 20 & 6 & $51.37\%$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Three qualitative messages matter more than the individual percentages.
+\begin{enumerate}
+\item Moving from the critical level $h=k$ to the first supercritical level $h=k+1$ produces a large increase for $k=2,3,5$.
+\item Fourth powers are a conspicuous negative control: $h=5$ is already supercritical in the dimensional sense, yet coverage remains poor because the two-adic rigidity is much stronger.  The tested range becomes complete only at $h=9$, consistent with the conjectural value $v(4)=9$ and the rigorous lower bound $v(4)\ge9$.
+\item Finite completeness is only supporting evidence.  A proof of $v(k)$ must handle all targets and allow roots far beyond the natural scale.
+\end{enumerate}
+
+For completeness, the classical lower bound $v(4)\ge9$ can itself be seen very simply.  Fourth powers are $0$ or $1\pmod{16}$.  If $24$ were a signed sum of at most eight fourth powers, then modulo $16$ all eight terms would have to be odd and carry the same sign.  Positivity forces all signs positive; but then either all bases are $\pm1$, giving $8$, or one has absolute value at least $3$, giving a sum already larger than $24$.  Hence $24$ needs at least nine fourth powers.  This argument is consistent with the general proof of Proposition~\ref{prop:two-resonance}.
+
+\section{How the three conjectures fit together}
+
+The conjectures are deliberately not redundant.
+
+\paragraph{Conjecture I is an upper-bound composition principle.}
+It says that once prime-power blocks are understood, mixed exponents can be assembled without paying more than the product of their costs.  It need not be sharp.
+
+\paragraph{Conjecture II is the generic local-to-global principle.}
+It says that once local costs fit inside $k+1$, the first supercritical dimensional level is both sufficient and necessary.  This is where the hard analytic and Diophantine issues live.
+
+\paragraph{Conjecture III identifies when local rigidity wins.}
+It predicts that the only threshold-changing mechanisms are the prime-adic resonances above, with the explicit exceptional values in \eqref{eq:two-formula}--\eqref{eq:odd-formula}.
+
+The resulting mental model is
+\begin{equation}\label{eq:mental-model}
+  \boxed{
+  v(k)\ \text{is governed by}\
+  \max\{\text{dimensional threshold},\ \text{binding local rigidity}\},
+  }
+\end{equation}
+subject to the crucial analytic requirement that the residual minor-arc contribution actually mixes well enough.
+
+The pair $50$ versus $150$ is the cleanest illustration.  At $50$, the $5$-adic cost $62$ exceeds $51$ and wins.  At $150$, the same local structure is still present but is much smaller than the dimensional threshold $151$, so sparsity wins.
+
+\section{What would constitute a proof?}
+
+The conjectural formula \eqref{eq:candidate-formula} should be viewed as a programme with distinct proof obligations.
+
+\subsection{A. Coprime composition}
+Prove
+\[
+  (a,b)=1\Longrightarrow v(ab)\le v(a)v(b).
+\]
+The projector law \eqref{eq:projector-lcm} gives a precise algebraic shadow of such a theorem, and the Rao--Habsieger identity machinery suggests that symmetry can make arithmetic descent efficient.  The missing step is to turn this into integral signed identities and control the associated modular correction.
+
+\subsection{B. Generic prime powers}
+For every prime $p\ge5$ and $a\ge1$, prove
+\[
+  v(p^a)\le p^a+1.
+\]
+Under Conjecture~\ref{conj:resonance}, these are the basic nonexceptional atoms.  This is already a serious problem: the first case would be $v(5)\le6$, whereas the classical bound is only $v(5)\le10$.
+
+\subsection{C. The generic lower bound}
+Prove that in the same nonexceptional cases
+\[
+  v(k)\ge k+1.
+\]
+The density argument motivates this but does not prove it because of unbounded cancellation.  This is logically separate from any circle-method upper bound.
+
+\subsection{D. Exceptional upper bounds}
+For odd resonances, match the rigorous local lower bound
+\[
+  \frac{p^{a+1}-1}{2}
+\]
+with a global representation theorem.  For powers of two, match the rigorous lower bound $2k+1$ of Proposition~\ref{prop:two-resonance}.  These are the points at which local arithmetic, rather than generic sparsity, is predicted to determine the answer.
+
+\subsection{E. Exclude further binding local mechanisms}
+Proposition~\ref{prop:absorption} proves that the transparent $\{0,\pm1\}$ resonances cannot remain binding once they are proper divisors of $k$.  A full proof of Conjecture~\ref{conj:resonance} would need to show that no subtler prime-power or CRT phenomenon produces a larger threshold elsewhere.
+
+\section{Conclusion}
+
+The proposed picture can be summarised in six statements:
+\begin{enumerate}[label=\textbf{\arabic*.}]
+\item $k$th powers have a natural dimensional threshold at $k+1$, because the root-scale representation budget is $P^{s-k}$.
+\item This threshold language is a reformulation of a classical main-term heuristic: archimedean density and local arithmetic density predict a singular-series main term, while minor arcs measure the residual obstruction.
+\item Density alone is insufficient: periodic, $p$-adic and more general Fourier structure can concentrate the available representations.
+\item For power sets, Weyl equidistribution rules out the fixed irrational Bohr obstruction available to arbitrary sets; the circle method therefore separates persistent rational/$p$-adic structure from a residual minor-arc cancellation problem.
+\item The simplest binding $p$-adic resonances occur at
+\[
+  k=\frac{p-1}{2}p^a,
+\]
+and elementary congruence arguments produce exactly the exceptional lower-bound scales proposed in Conjecture~\ref{conj:resonance}.  Proper multiples absorb these local costs into the larger dimensional budget.
+\item Prime-power factors should be the natural atoms for upper bounds.  If coprime submultiplicativity holds, mixed exponents can be assembled from those atoms, while density--rigidity determines how far the product ceiling can be sharpened.
+\end{enumerate}
+
+This division is useful even if the final formula requires revision.  It separates three very different mathematical questions: \emph{how sparse are the available summands?}, \emph{which arithmetic directions are inaccessible or thin?}, and \emph{once the understood structure is removed, is the remaining representation system sufficiently mixing?}  The easier Waring problem is difficult precisely because all three questions meet at the conjecturally minimal number of variables.
+
+\appendix
+\section{A compact reference table}
+
+\begin{center}
+\begin{tabularx}{0.96\textwidth}{p{0.26\textwidth}X}
+\toprule
+Topic used in this note & Status / reference \\
+\midrule
+Definition and elementary finiteness of $v(k)$ & Wright \cite{Wright1934}; Fuchs--Wright \cite{FuchsWright1939}. \\
+Small-$k$ bounds and identity methods & Revoy \cite{Revoy1991}, Borwein \cite{Borwein2002}, Vavilov \cite{Vavilov2022}. \\
+Local quantity $\Delta(k,m)$ and the bounds $\Delta(k)\le(3k-1)/2$ (odd), $\Delta(k)\le2k$ (even) & Wright's calculation as summarised by Borwein \cite[Sec.~4.1]{Borwein2002}. \\
+Finite Fourier analysis, convolution, Bohr sets & Tao--Vu \cite{TaoVu2006}; Lemma~\ref{lem:fourier-cover} is proved here from Fourier inversion. \\
+Polynomial equidistribution at irrational frequency & Weyl \cite{Weyl1916}. \\
+Major/minor arcs and singular-series philosophy & Vaughan \cite{Vaughan1997}; see also the worked examples of Br\"udern--Wooley \cite{BruedernWooley2001} and Wooley \cite{WooleyTwoSquares}. \\
+Local density refinements and arithmetic probabilistic models for four cubes & Deshouillers--Hennecart--Landreau \cite{Deshouillers1999}. \\
+Auxiliary equations, smooth Weyl sums and efficient differencing in Waring's problem & Vaughan--Wooley \cite{VaughanWooley1994}. \\
+Local-global failure for rational two cubes & Alp\"oge--Bhargava--Shnidman \cite{AlpogeBhargavaShnidman}. \\
+Finite universality tests for quadratic forms & Conway--Schneeberger/Bhargava's Fifteen Theorem \cite{Conway2000,Bhargava2000}. \\
+Polynomial identities / Prouhet--Tarry--Escott route to easier-Waring bounds & Borwein \cite{Borwein2002}; Habsieger \cite{Habsieger1991}. \\
+Rao sixth-power identity and group-theoretic interpretation & Rao \cite{Rao1938}; Habsieger \cite{Habsieger1991}. \\
+Arithmetic progressions in the primes & Green--Tao \cite{GreenTao2008}. \\
+Divergent reciprocal-sum AP conjecture & Erd\H{o}s \cite{Erdos1980}; still open in full. \\
+Odd- and two-adic $\{0,\pm1\}$ resonance calculations & Propositions~\ref{prop:odd-resonance} and \ref{prop:two-resonance}, proved in this note. \\
+The three main structural claims & Conjectures~\ref{conj:coprime}, \ref{conj:generic}, \ref{conj:resonance}; conjectural. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{Computational reproducibility}
+
+The finite coverage table in this note can be reproduced with exact integer arithmetic using the recurrence
+\[
+  R_{h+1}=R_h+\{0,\pm1^k,\ldots,\pm P^k\},\qquad R_0=\{0\}.
+\]
+A bitset implementation is particularly efficient because each update is a finite collection of bit shifts and bitwise OR operations.  No floating-point arithmetic or random sampling is required.  For publication-quality computational claims, the calculation should be independently implemented a second way (for example by meet-in-the-middle enumeration), and the root cutoff, target interval, sign convention and zero-padding convention should be archived explicitly.
+
+\begin{thebibliography}{99}
+
+\bibitem{Wright1934}
+E. M. Wright,
+``An Easier Waring's Problem,''
+\emph{Journal of the London Mathematical Society} s1-9 (1934), 267--272.
+\href{https://doi.org/10.1112/jlms/s1-9.4.267}{doi:10.1112/jlms/s1-9.4.267}.
+
+\bibitem{FuchsWright1939}
+W. H. J. Fuchs and E. M. Wright,
+``The `Easier' Waring Problem,''
+\emph{Quarterly Journal of Mathematics} os-10 (1939), 190--209.
+\href{https://doi.org/10.1093/qmath/os-10.1.190}{doi:10.1093/qmath/os-10.1.190}.
+
+\bibitem{Revoy1991}
+P. Revoy,
+``Le probl\`eme facile de Waring,''
+\emph{L'Enseignement Math\'ematique} 37 (1991), 223--234.
+
+\bibitem{Borwein2002}
+P. Borwein,
+``The Easier Waring Problem,'' in
+\emph{Computational Excursions in Analysis and Number Theory},
+Springer, 2002, 97--101.
+\href{https://doi.org/10.1007/978-0-387-21652-2_12}{doi:10.1007/978-0-387-21652-2\_12}.
+
+\bibitem{Vavilov2022}
+N. A. Vavilov,
+``Computers as novel mathematical reality: V. Easier Waring problem,''
+\emph{Computer Tools in Education} (2022), no.~3, 5--63.
+\href{https://doi.org/10.32603/2071-2340-2022-3-5-63}{doi:10.32603/2071-2340-2022-3-5-63}.
+
+\bibitem{Nathanson1996}
+M. B. Nathanson,
+\emph{Additive Number Theory: The Classical Bases},
+Graduate Texts in Mathematics 164, Springer, 1996.
+\href{https://doi.org/10.1007/978-1-4757-3845-2}{doi:10.1007/978-1-4757-3845-2}.
+
+\bibitem{TaoVu2006}
+T. Tao and V. Vu,
+\emph{Additive Combinatorics},
+Cambridge Studies in Advanced Mathematics 105, Cambridge University Press, 2006.
+
+\bibitem{HardyWright2008}
+G. H. Hardy and E. M. Wright,
+\emph{An Introduction to the Theory of Numbers}, 6th ed.,
+revised by D. R. Heath-Brown and J. H. Silverman,
+Oxford University Press, 2008.
+
+\bibitem{Weyl1916}
+H. Weyl,
+``\"Uber die Gleichverteilung von Zahlen mod. Eins,''
+\emph{Mathematische Annalen} 77 (1916), 313--352.
+\href{https://doi.org/10.1007/BF01475864}{doi:10.1007/BF01475864}.
+
+\bibitem{Vaughan1997}
+R. C. Vaughan,
+\emph{The Hardy--Littlewood Method}, 2nd ed.,
+Cambridge Tracts in Mathematics 125, Cambridge University Press, 1997.
+
+\bibitem{Rao1938}
+K. Subba Rao,
+``Representation of every Number as a Sum of Rational $k$-th Powers,''
+\emph{Journal of the London Mathematical Society} s1-13 (1938), 14--16.
+\href{https://doi.org/10.1112/jlms/s1-13.1.14}{doi:10.1112/jlms/s1-13.1.14}.
+
+\bibitem{Habsieger1991}
+L. Habsieger,
+``Repr\'esentations des groupes et identit\'es polynomiales,''
+\emph{Journal de Th\'eorie des Nombres de Bordeaux} 3 (1991), 1--11.
+\href{https://doi.org/10.5802/jtnb.38}{doi:10.5802/jtnb.38}.
+
+\bibitem{GreenTao2008}
+B. Green and T. Tao,
+``The primes contain arbitrarily long arithmetic progressions,''
+\emph{Annals of Mathematics} 167 (2008), 481--547.
+\href{https://doi.org/10.4007/annals.2008.167.481}{doi:10.4007/annals.2008.167.481}.
+
+\bibitem{Erdos1980}
+P. Erd\H{o}s,
+``A survey of problems in combinatorial number theory,''
+\emph{Annals of Discrete Mathematics} 6 (1980), 89--115.
+
+\bibitem{BukhMO}
+B. Bukh, ``Lower bounds on the easier Waring problem,''
+MathOverflow question with answer by T. D. Wooley (2011).
+\url{https://mathoverflow.net/questions/64649/lower-bounds-on-the-easier-waring-problem}.
+
+
+\bibitem{Deshouillers1999}
+J.-M. Deshouillers, F. Hennecart and B. Landreau,
+``$7\,373\,170\,279\,850$,''
+\emph{Mathematics of Computation} 69 (2000), no.~229, 421--439.
+
+\bibitem{BruedernWooley2001}
+J. Br\"udern and T. D. Wooley,
+``On Waring's Problem: Three Cubes and a Sixth Power,''
+\emph{Nagoya Mathematical Journal} 163 (2001), 13--53.
+
+\bibitem{WooleyTwoSquares}
+T. D. Wooley,
+``On Waring's Problem: Two Squares, Two Cubes and Two Sixth Powers,''
+preprint.
+
+\bibitem{VaughanWooley1994}
+R. C. Vaughan and T. D. Wooley,
+``Further improvements in Waring's problem,''
+preprint / article version as circulated in the Waring literature.
+
+\bibitem{AlpogeBhargavaShnidman}
+L. Alp\"oge, M. Bhargava and A. Shnidman,
+``Integers expressible as the sum of two rational cubes,''
+preprint.
+
+\bibitem{Conway2000}
+J. H. Conway,
+``Universal quadratic forms and the Fifteen Theorem,''
+in \emph{Quadratic Forms and Their Applications}, Contemporary Mathematics 272, American Mathematical Society, 2000, 23--26.
+
+\bibitem{Bhargava2000}
+M. Bhargava,
+``On the Conway--Schneeberger Fifteen Theorem,''
+in \emph{Quadratic Forms and Their Applications}, Contemporary Mathematics 272, American Mathematical Society, 2000, 27--37.
+
+\end{thebibliography}
+
+\end{document}

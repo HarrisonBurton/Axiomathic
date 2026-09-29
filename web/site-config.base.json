@@ -1,21 +1,21 @@
 {
   "siteTitle": "Axiomathic",
-  "tagline": "A collection of notes, write ups and doodles.",
-  "intro": "A place I created to store my various mathematical scribbles.",
+  "tagline": "Dumping ground for writings and projects.",
+  "intro": "A space I created to store various ramblings, scribbles and doodles.",
   "categories": [
     {
       "folder": "summary-notes",
       "id": "notes",
       "label": "Summary Notes",
-      "eyebrow": "NOTE",
-      "description": "Compact write-ups and worked mathematical ideas."
+      "eyebrow": "LECTURE NOTES",
+      "description": "Long form, lecture note style write ups of topics."
     },
     {
       "folder": "projects",
       "id": "projects",
       "label": "Projects",
-      "eyebrow": "PROJECT",
-      "description": "Longer investigations and research-style write-ups."
+      "eyebrow": "ARTICLE",
+      "description": "Standalone, one-off projects / notes."
     }
   ],
   "utilityCategories": [
@@ -24,5 +24,5 @@
       "label": "Style Guide"
     }
   ],
-  "about": "Axiomathic is built from LaTeX source. Copyright Harrison Burton 2026."
+  "about": "Axiomathic is built from a single LaTeX source so each page should be available as a pdf. Copyright Harrison Burton 2026."
 }

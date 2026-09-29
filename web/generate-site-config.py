@@ -5,6 +5,25 @@ ROOT=Path('.')
 BASE=json.loads(Path('web/site-config.base.json').read_text(encoding='utf-8'))
 MASTER=Path('Axiomathic.tex').read_text(encoding='utf-8')
 
+def generated_html_title_map():
+    mapping={}
+    for hp in Path('.').glob('*.html'):
+        if hp.name.endswith('_html.html'):
+            continue
+        txt=hp.read_text(encoding='utf-8', errors='ignore')
+        m=re.search(r'<title>\s*Axiomathic\s+—\s+([^<]+)</title>', txt)
+        if m:
+            mapping[html.unescape(m.group(1)).strip()] = hp.name
+        else:
+            h=re.search(r'<h3[^>]*>(.*?)</h3>', txt, re.S)
+            if h:
+                title=html.unescape(re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', '', h.group(1)))).strip()
+                if title:
+                    mapping[title]=hp.name
+    return mapping
+
+HTML_BY_TITLE = generated_html_title_map()
+
 # Preserve the order in the master document.
 SUBFILES=[m.group(1).strip() for m in re.finditer(r'\\subfile\{([^}]+)\}', MASTER)]
 
@@ -44,11 +63,19 @@ def slug(title):
     s=re.sub(r'[^A-Za-z0-9]+','-',title).strip('-')
     return s+'.html'
 
+def explicit_filename(text):
+    m=re.search(r'\\FileName\{([^{}]+)\}', text)
+    if not m:
+        return None
+    name=m.group(1).strip()
+    return name if name.endswith('.html') else name + '.html'
+
 def entry_for(path, eyebrow=None):
     p=Path(path if path.endswith('.tex') else path+'.tex')
     text=p.read_text(encoding='utf-8',errors='ignore')
     title=chapter_title(text,p.stem)
-    return {'file':slug(title),'title':title,'eyebrow':eyebrow or 'PAGE','description':first_paragraph(text),'source':str(p).replace('\\','/')}
+    filename=HTML_BY_TITLE.get(title) or explicit_filename(text) or slug(title)
+    return {'file':filename,'title':title,'eyebrow':eyebrow or 'PAGE','description':first_paragraph(text),'source':str(p).replace('\\','/')}
 
 sections=[]
 for cat in BASE.get('categories',[]):

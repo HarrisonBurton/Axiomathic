@@ -343,40 +343,6 @@ body.ax-dark .ax-home section.textbody > h1:first-of-type { background: #152130;
   .ax-search { width: min(42vw, 240px); }
   h4 { font-size: 2.1rem; }
 }
-@media (max-width: 900px) {
- .sidetoccontainer,
- .ax-right-rail {
- display: none !important;
- }
-
- .bodycontainer,
- .mainmatter,
- section.textbody {
- margin-left: 0 !important;
- margin-right: 0 !important;
- padding-left: 1rem !important;
- padding-right: 1rem !important;
- width: auto !important;
- max-width: none !important;
- }
-
- body {
- overflow-x: hidden;
- }
-
- .ax-header {
- padding-left: 1rem;
- padding-right: 1rem;
- }
-
- .ax-nav {
- display: none;
- }
-
- .ax-brand {
- min-width: 0;
- }
-}
 @media (max-width: 620px) {
   :root { --header-h: 62px; }
   .ax-header { padding: 0 1rem; gap: .8rem; }
@@ -1080,4 +1046,48 @@ section.textbody figure img[style*="rotate"],
 section.textbody figure img[style*="transform"] {
   max-width: min(100%, 720px) !important;
   max-height: 78vh !important;
+}
+
+/* v6.1 mobile reset: the desktop fixed rails must never reserve space on phones. */
+@media (max-width: 900px) {
+  .sidetoccontainer,
+  .ax-right-rail {
+    display: none !important;
+  }
+
+  .bodycontainer,
+  .mainmatter,
+  section.textbody,
+  .textbody {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    width: auto !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+  }
+
+  body {
+    overflow-x: hidden !important;
+  }
+
+  .ax-header {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  .ax-nav,
+  .ax-search {
+    display: none !important;
+  }
+
+  .ax-brand {
+    min-width: 0 !important;
+  }
+
+  .ax-brand-logo {
+    height: 2rem !important;
+    max-height: 2rem !important;
+  }
 }

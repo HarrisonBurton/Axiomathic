@@ -62,6 +62,12 @@ for f in *.html; do
 done
 cp site.css web/theme.js "${PROJECT}.pdf" site/
 
+# Copy lwarp-generated TikZ/LaTeX image assets into the deployed site.
+find . -maxdepth 3 \( -name "*.svg" -o -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" \) \
+! -path "./site/*" \
+! -path "./assets/*" \
+-exec cp --parents {} site/ \;
+
 # Conventional asset folders are copied verbatim when present.
 for d in assets figures images media; do
   if [[ -d "$d" ]]; then

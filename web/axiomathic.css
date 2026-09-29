@@ -1091,3 +1091,99 @@ section.textbody figure img[style*="transform"] {
     max-height: 2rem !important;
   }
 }
+
+/* ---------------------------------------------------------
+ Mobile layout hard reset
+ --------------------------------------------------------- */
+
+@media (max-width: 900px) {
+ html,
+ body {
+ width: 100%;
+ max-width: 100%;
+ margin: 0;
+ padding: 0;
+ overflow-x: hidden;
+ }
+
+ .sidetoccontainer,
+ .ax-right-rail {
+ display: none !important;
+ }
+
+ .bodycontainer,
+ .mainmatter,
+ .textbody,
+ section.textbody,
+ main,
+ article {
+ display: block !important;
+ width: auto !important;
+ max-width: none !important;
+ min-width: 0 !important;
+ margin-left: 0 !important;
+ margin-right: 0 !important;
+ padding-left: 1.1rem !important;
+ padding-right: 1.1rem !important;
+ box-sizing: border-box !important;
+ }
+
+ section.textbody {
+ padding-top: 2rem !important;
+ }
+
+ section.textbody > h3:first-of-type {
+ font-size: clamp(2.1rem, 12vw, 3.2rem) !important;
+ line-height: 1.05 !important;
+ max-width: 100% !important;
+ overflow-wrap: break-word;
+ }
+
+ section.textbody h4 {
+ font-size: clamp(1.45rem, 8vw, 2.1rem) !important;
+ line-height: 1.1 !important;
+ max-width: 100% !important;
+ }
+
+ p,
+ li,
+ dd,
+ td {
+ font-size: 1rem !important;
+ line-height: 1.55 !important;
+ max-width: 100% !important;
+ overflow-wrap: break-word;
+ }
+
+ mjx-container {
+ max-width: 100% !important;
+ overflow-x: auto;
+ overflow-y: hidden;
+ }
+
+ .ax-header {
+ position: sticky;
+ top: 0;
+ width: 100%;
+ padding: 0.85rem 1rem !important;
+ box-sizing: border-box;
+ }
+
+ .ax-brand {
+ min-width: 0 !important;
+ }
+
+ .ax-brand-logo {
+ height: 2.2rem !important;
+ width: auto !important;
+ }
+
+ .ax-wordmark {
+ font-size: 1.9rem !important;
+ }
+
+ .ax-nav,
+ .ax-search {
+ display: none !important;
+ }
+}

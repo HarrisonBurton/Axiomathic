@@ -1092,98 +1092,158 @@ section.textbody figure img[style*="transform"] {
   }
 }
 
-/* ---------------------------------------------------------
- Mobile layout hard reset
- --------------------------------------------------------- */
+/* =========================================================
+   Axiomathic v6.3: phone layout hard reset
+   =========================================================
+   This comes last deliberately.  lwarp emits several nested width/margin
+   containers, so the phone breakpoint must reset all likely article wrappers.
+*/
+@media screen and (max-width: 760px) {
+  *, *::before, *::after {
+    box-sizing: border-box !important;
+  }
 
-@media (max-width: 900px) {
- html,
- body {
- width: 100%;
- max-width: 100%;
- margin: 0;
- padding: 0;
- overflow-x: hidden;
- }
+  html,
+  body {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
+  }
 
- .sidetoccontainer,
- .ax-right-rail {
- display: none !important;
- }
+  body {
+    display: block !important;
+  }
 
- .bodycontainer,
- .mainmatter,
- .textbody,
- section.textbody,
- main,
- article {
- display: block !important;
- width: auto !important;
- max-width: none !important;
- min-width: 0 !important;
- margin-left: 0 !important;
- margin-right: 0 !important;
- padding-left: 1.1rem !important;
- padding-right: 1.1rem !important;
- box-sizing: border-box !important;
- }
+  .ax-header {
+    position: sticky !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding: .85rem 1rem !important;
+    margin: 0 !important;
+  }
 
- section.textbody {
- padding-top: 2rem !important;
- }
+  .sidetoccontainer,
+  .sidetoc,
+  .sidetoccontents,
+  .ax-right-rail,
+  .ax-nav,
+  .ax-search {
+    display: none !important;
+  }
 
- section.textbody > h3:first-of-type {
- font-size: clamp(2.1rem, 12vw, 3.2rem) !important;
- line-height: 1.05 !important;
- max-width: 100% !important;
- overflow-wrap: break-word;
- }
+  .bodycontainer,
+  div.bodycontainer,
+  .mainmatter,
+  div.mainmatter,
+  .textbody,
+  div.textbody,
+  section.textbody,
+  main,
+  article {
+    position: static !important;
+    display: block !important;
+    float: none !important;
+    clear: both !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
 
- section.textbody h4 {
- font-size: clamp(1.45rem, 8vw, 2.1rem) !important;
- line-height: 1.1 !important;
- max-width: 100% !important;
- }
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
 
- p,
- li,
- dd,
- td {
- font-size: 1rem !important;
- line-height: 1.55 !important;
- max-width: 100% !important;
- overflow-wrap: break-word;
- }
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    margin-top: 0 !important;
 
- mjx-container {
- max-width: 100% !important;
- overflow-x: auto;
- overflow-y: hidden;
- }
+    padding-left: 1.15rem !important;
+    padding-right: 1.15rem !important;
 
- .ax-header {
- position: sticky;
- top: 0;
- width: 100%;
- padding: 0.85rem 1rem !important;
- box-sizing: border-box;
- }
+    overflow-x: visible !important;
+  }
 
- .ax-brand {
- min-width: 0 !important;
- }
+  section.textbody,
+  .textbody {
+    padding-top: 1.7rem !important;
+    padding-bottom: 3.5rem !important;
+  }
 
- .ax-brand-logo {
- height: 2.2rem !important;
- width: auto !important;
- }
+  section.textbody > *,
+  .textbody > * {
+    width: auto !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
 
- .ax-wordmark {
- font-size: 1.9rem !important;
- }
+  body:not(.ax-home) section.textbody > h3:first-of-type {
+    font-size: clamp(2rem, 12vw, 3rem) !important;
+    line-height: 1.04 !important;
+    letter-spacing: -0.035em !important;
+    max-width: 100% !important;
+    width: auto !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    hyphens: none !important;
+  }
 
- .ax-nav,
- .ax-search {
- display: none !important;
- }
+  section.textbody h4,
+  section.textbody h5 {
+    font-size: clamp(1.35rem, 7.5vw, 2rem) !important;
+    line-height: 1.12 !important;
+    max-width: 100% !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    hyphens: none !important;
+  }
+
+  p,
+  li,
+  dd,
+  td,
+  .para,
+  .p {
+    width: auto !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    font-size: 1rem !important;
+    line-height: 1.55 !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    hyphens: none !important;
+  }
+
+  img,
+  svg,
+  video,
+  canvas {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  .lateximage,
+  img.lateximage {
+    display: block !important;
+    max-width: 100% !important;
+    height: auto !important;
+    margin: 1rem auto !important;
+  }
+
+  mjx-container {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+  }
+
+  table {
+    display: block !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+  }
 }

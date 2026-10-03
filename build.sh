@@ -5,8 +5,15 @@ export TERM="${TERM:-xterm}"
 PROJECT="Axiomathic"
 WEBPROJECT="${PROJECT}_web"
 
-# 1. Traditional PDF from the ordinary LaTeX source.
-# This deliberately does not load lwarp.
+log() {
+  printf '\n==> %s\n' "$*"
+}
+
+log "Cleaning previous generated site artefacts"
+rm -rf site "${WEBPROJECT}-images" lateximages
+rm -f ./*.html site.css "${WEBPROJECT}.tex"
+
+log "Building ordinary PDF from ${PROJECT}.tex"
 pdflatex -interaction=nonstopmode -halt-on-error "${PROJECT}.tex"
 if command -v bibtex >/dev/null 2>&1 && [[ -f "${PROJECT}.aux" ]]; then
   bibtex "$PROJECT" || true
@@ -14,44 +21,78 @@ fi
 pdflatex -interaction=nonstopmode -halt-on-error "${PROJECT}.tex"
 pdflatex -interaction=nonstopmode -halt-on-error "${PROJECT}.tex"
 
-# 2. HTML build through a temporary web wrapper.  The wrapper defines
-# AXIOMATHICWEB before inputting the normal master file, so lwarp is loaded for
-# the web build but not for ordinary local PDF compilation.
+log "Creating temporary lwarp wrapper ${WEBPROJECT}.tex"
 cat > "${WEBPROJECT}.tex" <<'TEX'
 \def\AXIOMATHICWEB{}
 \input{Axiomathic.tex}
 TEX
 
-rm -f ./*.html
-# Prime lwarp: the first LaTeX pass writes the .lwarpmkconf file that lwarpmk needs.
+log "Priming lwarp"
 pdflatex -interaction=nonstopmode -halt-on-error "${WEBPROJECT}.tex"
+
+log "Building first HTML pass"
 lwarpmk html -p "$WEBPROJECT"
 
-
-# Render any TikZ/LaTeX image fragments requested by lwarp.
-rm -rf "${WEBPROJECT}-images" lateximages
-lwarpmk limages -p "$WEBPROJECT"
-
-#Rebuild html now image files exist
-lwarpmk html -p "$WEBPROJECT"
-
-# If BibTeX is available, build the HTML bibliography too.
 if command -v bibtex >/dev/null 2>&1 && [[ -f "${WEBPROJECT}_html.aux" ]]; then
+  log "Building HTML bibliography"
   bibtex "${WEBPROJECT}_html" || true
   lwarpmk again -p "$WEBPROJECT"
   lwarpmk html -p "$WEBPROJECT"
 fi
 
-#Rebuild html again
+log "Rendering lwarp LaTeX/TikZ image fragments"
+# This is intentionally not hidden behind `|| true`: if TikZ/image generation
+# fails, the GitHub Actions log should show the real error rather than shipping
+# broken <img> references.
+lwarpmk limages -p "$WEBPROJECT"
+
+log "Generated lwarp image files"
+find "${WEBPROJECT}-images" lateximages -maxdepth 2 -type f 2>/dev/null | sort || true
+
+log "Converting generated SVGs to PNG fallback images when rsvg-convert is available"
+# GitHub Pages normally serves SVG correctly, but some lwarp-generated SVGs have
+# been awkward in-browser. PNG fallbacks are more predictable for TikZ diagrams.
+if command -v rsvg-convert >/dev/null 2>&1 && [[ -d "${WEBPROJECT}-images" ]]; then
+  while IFS= read -r -d '' svg; do
+    png="${svg%.svg}.png"
+    rsvg-convert "$svg" -o "$png"
+  done < <(find "${WEBPROJECT}-images" -type f -name '*.svg' -print0)
+else
+  echo "rsvg-convert not available or ${WEBPROJECT}-images missing; retaining SVG references."
+fi
+
+log "Rebuilding final HTML pass after image generation"
 lwarpmk html -p "$WEBPROJECT"
-# 3. Rebuild website navigation from the LaTeX source-folder structure.
+
+log "Generating Axiomathic site config"
 python3 web/generate-site-config.py
 
-# 4. Layer the reusable Axiomathic theme on top of lwarp's structural CSS.
+log "Combining CSS and post-processing HTML"
 cat lwarp.css web/axiomathic.css > site.css
 python3 web/postprocess.py
 
-# 5. Gather only deployable static files.
+log "Rewriting lwarp image references to PNG fallbacks where available"
+python3 - <<'PY'
+from pathlib import Path
+import re
+
+image_dir = Path('Axiomathic_web-images')
+if image_dir.exists():
+    for html in Path('.').glob('*.html'):
+        if html.name.endswith('_html.html'):
+            continue
+        text = html.read_text(encoding='utf-8')
+        def repl(match):
+            src = match.group(1)
+            png = Path(src).with_suffix('.png')
+            if png.exists():
+                return f'src="{png.as_posix()}"'
+            return match.group(0)
+        text = re.sub(r'src="([^"]*Axiomathic_web-images/[^"]+?)\.svg"', repl, text)
+        html.write_text(text, encoding='utf-8')
+PY
+
+log "Gathering deployable static files"
 rm -rf site
 mkdir -p site
 for f in *.html; do
@@ -62,21 +103,19 @@ for f in *.html; do
 done
 cp site.css web/theme.js "${PROJECT}.pdf" site/
 
-# Copy lwarp-generated TikZ/LaTeX image assets into the deployed site.
-find . -maxdepth 3 \( -name "*.svg" -o -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" \) \
-! -path "./site/*" \
-! -path "./assets/*" \
--exec cp --parents {} site/ \;
-
-# Conventional asset folders are copied verbatim when present.
 for d in assets figures images media; do
   if [[ -d "$d" ]]; then
     cp -R "$d" site/
   fi
 done
-if [[ -d lateximages ]]; then
-  cp -R lateximages site/
-fi
+
+# Copy lwarp-generated TikZ/LaTeX image directories exactly where the HTML
+# expects them, e.g. site/Axiomathic_web-images/image-1.png.
+for d in "${WEBPROJECT}-images" lateximages; do
+  if [[ -d "$d" ]]; then
+    cp -R "$d" site/
+  fi
+done
 
 # Article-specific media may live beside a subfile. Copy only media folders,
 # preserving their paths, rather than publishing the LaTeX sources themselves.
@@ -89,7 +128,9 @@ fi
 
 touch site/.nojekyll
 
-# Remove the generated wrapper source; auxiliary files are ignored/cleanable.
+log "Files in deployed site relevant to lwarp images"
+find site -maxdepth 4 \( -path "*${WEBPROJECT}-images*" -o -path "*lateximages*" \) -type f | sort || true
+
 rm -f "${WEBPROJECT}.tex"
 
-echo "Built site/index.html and ${PROJECT}.pdf"
+log "Built site/index.html and ${PROJECT}.pdf"

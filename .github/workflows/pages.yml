@@ -33,6 +33,7 @@ jobs:
             texlive-bibtex-extra \
             texlive-lang-japanese \
             dvisvgm \
+            librsvg2-bin \
             poppler-utils
 
       - name: Build PDF and website

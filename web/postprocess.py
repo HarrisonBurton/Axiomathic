@@ -139,6 +139,18 @@ def strip_book_chapter_label(text: str) -> str:
     return pattern.sub(r'\1', text)
 
 
+
+
+def ensure_mobile_viewport(text: str) -> str:
+    """Ensure phones use their actual viewport width instead of a desktop canvas."""
+    if 'name="viewport"' in text or "name='viewport'" in text:
+        return text
+    return text.replace(
+        '<head>',
+        '<head>\n<meta name="viewport" content="width=device-width, initial-scale=1">',
+        1,
+    )
+
 def fix_mathjax_environment_spacing(text: str) -> str:
     """MathJax is stricter than TeX about lwarp's `\begin {cases}` form.
     Normalise common environment delimiters before publishing.
@@ -154,6 +166,7 @@ for path in ROOT.glob("*.html"):
     text = strip_book_chapter_label(text)
     text = add_type_classes(text)
     text = fix_mathjax_environment_spacing(text)
+    text = ensure_mobile_viewport(text)
 
     config_tag = f"<script>{CONFIG_JS}</script>"
     script_tag = '<script src="theme.js" defer></script>'

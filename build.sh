@@ -94,6 +94,9 @@ mkdir -p site
 # Root HTML produced by lwarp.
 find . -maxdepth 1 -type f -name '*.html' -exec cp {} site/ \;
 
+#Remove lwarp's internal HTML artefact.
+rm -f "site/${WEBPROJECT}_html.html"
+
 # CSS/JS/theme assets. site.css is the combined lwarp structural CSS +
 # Axiomathic theme. postprocess.py ensures every page references it.
 cp site.css site/

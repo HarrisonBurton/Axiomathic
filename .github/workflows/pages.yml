@@ -34,6 +34,7 @@ jobs:
             texlive-lang-japanese \
             latexmk \
             poppler-utils \
+            texlive-extra-utils \
             ghostscript
 
       - name: Build PDF and website

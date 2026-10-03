@@ -1152,3 +1152,104 @@ section.textbody img.lateximage {
   }
 }
 
+
+/* =========================================================
+   Axiomathic: fluid article width + single-padding mobile layout
+   ========================================================= */
+
+/*
+   The right-hand "On this page" rail is fixed-position UI, so it should not
+   permanently consume article width. Keep a readable maximum line length,
+   but let the article use the available viewport space.
+*/
+:root {
+  --content-w: 960px;
+}
+
+@media (min-width: 1181px) {
+  body:not(.ax-home):not(.ax-no-left-rail) .bodycontainer {
+    margin-left: calc(var(--left-w) + var(--left-gap)) !important;
+    margin-right: 2rem !important;
+    width: min(
+      var(--content-w),
+      calc(100vw - var(--left-w) - var(--left-gap) - 4rem)
+    ) !important;
+    max-width: var(--content-w) !important;
+  }
+
+  body:not(.ax-home) .botnavigation {
+    margin-left: calc(var(--left-w) + var(--left-gap)) !important;
+    margin-right: 2rem !important;
+    max-width: var(--content-w) !important;
+  }
+}
+
+/*
+   Only show the fixed right rail when the viewport is genuinely wide enough
+   for it to sit beside a 960px article without covering the prose.
+*/
+@media (max-width: 1600px) {
+  .ax-right-rail {
+    display: none !important;
+  }
+}
+
+/*
+   Mobile layout: apply horizontal padding once, on the outer article
+   container.  Previous rules padded bodycontainer, mainmatter and textbody,
+   which compounded because those elements are nested and could make the
+   usable phone column extremely narrow.
+*/
+@media (max-width: 900px) {
+  .sidetoccontainer,
+  .ax-right-rail {
+    display: none !important;
+  }
+
+  .bodycontainer {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 1.5rem 1rem 3rem !important;
+    box-sizing: border-box !important;
+  }
+
+  .mainmatter,
+  section.textbody,
+  .textbody {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  body {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  section.textbody > * {
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  section.textbody img,
+  section.textbody svg,
+  section.textbody video,
+  section.textbody canvas {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  mjx-container {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+  }
+}

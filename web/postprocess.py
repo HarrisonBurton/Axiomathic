@@ -169,11 +169,19 @@ for path in ROOT.glob("*.html"):
     text = ensure_mobile_viewport(text)
 
     config_tag = f"<script>{CONFIG_JS}</script>"
+    style_tag = '<link rel="stylesheet" href="site.css">'
     script_tag = '<script src="theme.js" defer></script>'
 
     # Remove older injected theme/config tags before adding the current ones.
     text = re.sub(r'<script>window\.AXIOMATHIC_SITE\s*=.*?</script>\s*', '', text, flags=re.S)
     text = text.replace(script_tag, "")
-    text = text.replace("</head>", f"{config_tag}\n{script_tag}\n</head>")
+
+    # site.css combines lwarp.css with the Axiomathic theme. Remove any
+    # previous site.css tag, then inject one final explicit reference.
+    text = re.sub(
+        r'<link\b[^>]*href=["\']site\.css["\'][^>]*>\s*',
+        '', text, flags=re.I,
+    )
+    text = text.replace("</head>", f"{style_tag}\n{config_tag}\n{script_tag}\n</head>")
 
     path.write_text(text, encoding="utf-8")

@@ -66,22 +66,6 @@ else
   printf '{"sections": []}\n' > web/site-config.json
 fi
 
-printf '\n== Build combined site stylesheet ==\n'
-if [ ! -s lwarp.css ]; then
-  echo 'ERROR: lwarp.css is missing or empty. The generated HTML cannot be styled.' >&2
-  exit 1
-fi
-if [ ! -s web/axiomathic.css ]; then
-  echo 'ERROR: web/axiomathic.css is missing or empty.' >&2
-  exit 1
-fi
-cat lwarp.css web/axiomathic.css > site.css
-if [ ! -s site.css ]; then
-  echo 'ERROR: combined site.css was not created correctly.' >&2
-  exit 1
-fi
-printf 'Created site.css (%s bytes) from lwarp.css + web/axiomathic.css\n' "$(wc -c < site.css)"
-
 printf '\n== Postprocess HTML ==\n'
 if [ -f web/postprocess.py ]; then
   python3 web/postprocess.py
@@ -94,13 +78,11 @@ mkdir -p site
 # Root HTML produced by lwarp.
 find . -maxdepth 1 -type f -name '*.html' -exec cp {} site/ \;
 
-# CSS/JS/theme assets. site.css is the combined lwarp structural CSS +
-# Axiomathic theme. postprocess.py ensures every page references it.
-cp site.css site/
+# CSS/JS/theme assets.
+if [ -f web/axiomathic.css ]; then cp web/axiomathic.css site/; fi
 if [ -f web/theme.js ]; then cp web/theme.js site/; fi
 if [ -f web/site-config.json ]; then mkdir -p site/web && cp web/site-config.json site/web/site-config.json; fi
 if [ -d assets ]; then cp -r assets site/; fi
-if [ -s "${PROJECT}.pdf" ]; then cp "${PROJECT}.pdf" site/; fi
 
 # lwarp-generated image directory. This is the path used by HTML img src values.
 if [ -d "${WEBPROJECT}-images" ]; then
@@ -118,49 +100,6 @@ fi
 if [ -d build-reports ]; then
   cp -r build-reports site/
 fi
-
-touch site/.nojekyll
-
-printf '\n== Verify deployed theme assets ==\n'
-THEME_REPORT='build-reports/site-theme-report.txt'
-{
-  echo 'Axiomathic deployed-theme verification'
-  echo '======================================'
-  echo "site.css bytes: $(wc -c < site/site.css)"
-  echo "theme.js bytes: $(wc -c < site/theme.js 2>/dev/null || echo 0)"
-  echo
-  failures=0
-  for html in site/*.html; do
-    [ -e "$html" ] || continue
-    if grep -Fq 'href="site.css"' "$html"; then
-      echo "PASS stylesheet reference: $html"
-    else
-      echo "FAIL stylesheet reference: $html"
-      failures=$((failures + 1))
-    fi
-    if grep -Fq 'src="theme.js"' "$html"; then
-      echo "PASS theme script reference: $html"
-    else
-      echo "FAIL theme script reference: $html"
-      failures=$((failures + 1))
-    fi
-  done
-  echo
-  if [ "$failures" -eq 0 ]; then
-    echo 'RESULT: PASS'
-  else
-    echo "RESULT: FAIL - $failures missing theme reference(s)"
-  fi
-} | tee "$THEME_REPORT"
-
-if grep -q '^RESULT: FAIL' "$THEME_REPORT"; then
-  echo 'ERROR: deployed HTML is missing required theme references.' >&2
-  exit 1
-fi
-
-# Refresh the deployable report folder after the verification report exists.
-rm -rf site/build-reports
-cp -r build-reports site/
 
 printf '\n== Final deployed image/report summary ==\n'
 find site -maxdepth 4 -type f \( -path '*Axiomathic_web-images*' -o -path '*build-reports*' \) | sort

@@ -1,8 +1,8 @@
-name: Deploy Axiomathic Pages
+name: Build and deploy Axiomathic
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   workflow_dispatch:
 
 permissions:
@@ -17,12 +17,11 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install LaTeX and web-build dependencies
+      - name: Install LaTeX and image tools
         run: |
           sudo apt-get update
           sudo apt-get install -y \
@@ -33,28 +32,32 @@ jobs:
             texlive-pictures \
             texlive-bibtex-extra \
             texlive-lang-japanese \
-            dvisvgm \
-            ghostscript \
-            poppler-utils
+            latexmk \
+            poppler-utils \
+            ghostscript
 
       - name: Build PDF and website
         run: bash build.sh
 
-      - name: Upload build reports on failure
+      - name: Upload build diagnostics on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: axiomathic-build-reports
+          name: axiomathic-build-diagnostics
           path: |
-            site/build-reports
-            Axiomathic_web-images
             *.log
+            *.fls
+            *.aux
+            *_html.pdf
+            *-images.txt
+            *-images/**
+            build-reports/**
           if-no-files-found: ignore
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload artifact
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: site

@@ -1,8 +1,8 @@
-name: Build and publish Axiomathic
+name: Build and deploy Axiomathic Pages
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   workflow_dispatch:
 
 permissions:
@@ -18,10 +18,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install LaTeX and web-build dependencies
+      - name: Install LaTeX and build dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
@@ -33,16 +33,18 @@ jobs:
             texlive-bibtex-extra \
             texlive-lang-japanese \
             dvisvgm \
-            librsvg2-bin \
             ghostscript \
-            texlive-extra-utils \
             poppler-utils
+
+      - name: Show tool versions
+        run: |
+          pdflatex --version | head -n 2
+          lwarpmk --version || true
+          dvisvgm --version || true
+          gs --version || true
 
       - name: Build PDF and website
         run: bash build.sh
-
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

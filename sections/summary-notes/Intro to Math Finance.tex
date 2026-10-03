@@ -245,10 +245,11 @@ The $N(0,1)$ is just a constant which is a linear scaling factor and so we reach
 \[O(\delta S) \sim \O(S \sigma \sqrt{\delta t})\] or equivalently
 \[O(\delta S^2) \sim \O(S^2 \sigma^2\delta t) \]
 I've named this approach \textit{implicit risk neutrality} because it comes from the stock model which we built to be risk-neutral. There is a more ``from basics'' version which is:
-\paragraph{Explicity risk-neutrality}
-We consider a simple stock model; we observe the stock price at discrete time incremements $t$, $t+\delta t$, $t+2\delta t$, $\dots$ and the stock will either increase or decrease by some uncertain amount at each time step. For now, we don't know the probability of the increases or decreases so we denote these as $p$ and $(1-p)$. We illustrate this as:\\
+\paragraph{Explicit risk-neutrality}
+We consider a simple stock model; we observe the stock price at discrete time incremements $t$, $t+\delta t$, $t+2\delta t$, $\dots$ and the stock will either increase or decrease by some uncertain amount at each time step. For now, we don't know the probability of the increases or decreases so we denote these as $p$ and $(1-p)$. We illustrate this as:
+\begin{center}
 \input{Financial Mathematics/Binomial_Tree_1.tex}
-\\
+\end{center}
 Whilst we don't know the actual probabilities of the up and down move, to a certain extent we don't care. We are pricing in a risk neutral world and - as explained above - one way to think about risk neutral pricing is to recognise that the outcome determines the probability rather than the other way round (i.e. rather than expecting a large payoff for something unlikely which would be expecting compensation for risk you work backwards from the outcomes. This is akin to how bookmakers run a book). In the example above, the payoff is symmetric which means that $P=1-P=\frac{1}{2}$. \\
 We could have chosen diferent stocks moves, but then we would just have to adjust the probabilities accordingly; we have chosen the symmetric outcomes for simplicity. \\
 Now, consider a fairly natural question; what are the chances that my stock price is $S$ at time $t + \delta t$. Let's denote this probability as $P(S,t + \delta t)$. What are our requirements? Well for us to be at $S$ at time $t + \delta t$, we need either:
@@ -258,11 +259,9 @@ Now, consider a fairly natural question; what are the chances that my stock pric
 \end{itemize}
 
 Which we illustrate as:
-\\
-\\
+\begin{center}
 \input{Financial Mathematics/Binomial_Tree_2.tex}
-\\
-\\
+\end{center}
 But this essentially gives us a bit of recursion, because we then need to know the chances that we are at $S+\delta S$ at time $t = P(S + \delta S, t)$ and the $P(S-\delta S, t)$. We could regress the whole tree back but we don't need to for the point that we are illustrating. Formulate the above as an equation:
 \[P(S,t + \delta t) = \frac{1}{2}\biggl ( P(S + \delta S, t) + P(S - \delta S, t) \biggr ) \]
 We can now refer to our Taylor expansion of a function of two variables to approximate $P$ at $(S, t+\delta t)$ which gives:

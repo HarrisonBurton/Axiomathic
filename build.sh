@@ -42,23 +42,45 @@ fi
 
 log "Rendering lwarp LaTeX/TikZ image fragments"
 # This is intentionally not hidden behind `|| true`: if TikZ/image generation
-# fails, the GitHub Actions log should show the real error rather than shipping
-# broken <img> references.
+# itself fails, the GitHub Actions log should show the real error rather than
+# shipping broken <img> references.
 lwarpmk limages -p "$WEBPROJECT"
 
 log "Generated lwarp image files"
 find "${WEBPROJECT}-images" lateximages -maxdepth 2 -type f 2>/dev/null | sort || true
 
-log "Converting generated SVGs to PNG fallback images when rsvg-convert is available"
-# GitHub Pages normally serves SVG correctly, but some lwarp-generated SVGs have
-# been awkward in-browser. PNG fallbacks are more predictable for TikZ diagrams.
-if command -v rsvg-convert >/dev/null 2>&1 && [[ -d "${WEBPROJECT}-images" ]]; then
-  while IFS= read -r -d '' svg; do
-    png="${svg%.svg}.png"
-    rsvg-convert "$svg" -o "$png"
-  done < <(find "${WEBPROJECT}-images" -type f -name '*.svg' -print0)
+log "Converting valid generated SVGs to PNG fallback images when rsvg-convert is available"
+# Some lwarp-generated SVG files can be empty or malformed if the underlying
+# TikZ fragment failed. Do not let one bad SVG kill the whole GitHub build.
+if command -v rsvg-convert >/dev/null 2>&1; then
+  for image_dir in "${WEBPROJECT}-images" lateximages; do
+    if [[ -d "$image_dir" ]]; then
+      while IFS= read -r -d '' svg; do
+        png="${svg%.svg}.png"
+
+        if [[ ! -s "$svg" ]]; then
+          echo "WARNING: Skipping empty SVG: $svg"
+          continue
+        fi
+
+        if ! head -c 500 "$svg" | grep -qi "<svg"; then
+          echo "WARNING: Skipping non-SVG or malformed SVG: $svg"
+          echo "First few lines of $svg:"
+          sed -n '1,10p' "$svg" || true
+          continue
+        fi
+
+        if rsvg-convert "$svg" -o "$png"; then
+          echo "Converted $svg -> $png"
+        else
+          echo "WARNING: Failed to convert $svg to PNG; leaving SVG in place."
+          rm -f "$png"
+        fi
+      done < <(find "$image_dir" -type f -name '*.svg' -print0)
+    fi
+  done
 else
-  echo "rsvg-convert not available or ${WEBPROJECT}-images missing; retaining SVG references."
+  echo "rsvg-convert not available; retaining SVG references."
 fi
 
 log "Rebuilding final HTML pass after image generation"
@@ -71,25 +93,38 @@ log "Combining CSS and post-processing HTML"
 cat lwarp.css web/axiomathic.css > site.css
 python3 web/postprocess.py
 
-log "Rewriting lwarp image references to PNG fallbacks where available"
-python3 - <<'PY'
+log "Rewriting HTML image references to PNG only where PNG fallbacks exist"
+python3 - "$WEBPROJECT" <<'PY'
 from pathlib import Path
 import re
+import sys
 
-image_dir = Path('Axiomathic_web-images')
-if image_dir.exists():
+webproject = sys.argv[1]
+image_dirs = [Path(f"{webproject}-images"), Path("lateximages")]
+
+existing_pngs = set()
+for image_dir in image_dirs:
+    if image_dir.exists():
+        for png in image_dir.rglob("*.png"):
+            existing_pngs.add(png.as_posix())
+
+if existing_pngs:
+    pattern = re.compile(r'src="([^"]+?\.svg)"')
     for html in Path('.').glob('*.html'):
         if html.name.endswith('_html.html'):
             continue
         text = html.read_text(encoding='utf-8')
+
         def repl(match):
-            src = match.group(1)
-            png = Path(src).with_suffix('.png')
-            if png.exists():
-                return f'src="{png.as_posix()}"'
+            svg_ref = match.group(1)
+            png_ref = str(Path(svg_ref).with_suffix('.png')).replace('\\', '/')
+            if png_ref in existing_pngs:
+                return f'src="{png_ref}"'
             return match.group(0)
-        text = re.sub(r'src="([^"]*Axiomathic_web-images/[^"]+?)\.svg"', repl, text)
-        html.write_text(text, encoding='utf-8')
+
+        html.write_text(pattern.sub(repl, text), encoding='utf-8')
+else:
+    print("No PNG fallbacks found; retaining SVG references.")
 PY
 
 log "Gathering deployable static files"
